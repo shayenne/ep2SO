@@ -1,0 +1,10 @@
+O programa foi escrito em linguagem Python versão 2.7. 
+O interpretador python (?)
+
+Para rodar o ep2 basta digitar:
+$ python ep2.py
+
+
+Informações para o ep!
+Para escrever os inteiros, basta converte-los para chr() e colocá-los no nmap :)
+

@@ -2,9 +2,13 @@
 
 import readline
 import funcoes as f
+import struct
+from arquivos import *
 
 if __name__ == "__main__":
     prompt = raw_input("[ep2]: ").split()
+    mem = 'ep2.mem'
+    vir = 'ep2.vir'
     
     while prompt[0] != "sai":
         
@@ -13,12 +17,24 @@ if __name__ == "__main__":
                 print "Tenho que carregar o arquivo {}.".format(prompt[1])
                 arquivo = open(prompt[1], 'r')
                 total, virtual = map(int, arquivo.readline().split())
-                mem = open('/tmp/ep2.mem', 'wb')
-                mem.write((b'1')*total)
-                mem.close()
-                vir = open('/tmp/ep2.vir', 'wb')
-                vir.write((b'1')*virtual)
-                vir.close()
+                
+                # Inicializa os arquivos de memoria total e virtual
+                makeEmptyBin(mem, total)
+                makeEmptyBin(vir, virtual)
+
+                # Acessa uma posicao especifica do arquivo de memoria
+                mapmem = memory_map(mem)
+                print len(mapmem)
+                print mapmem[0:10]
+                print mapmem[0]
+                mapmem[4] = chr(64)
+                mapmem[0] = chr(2)
+                mapmem[2] = chr(16)
+                mapmem.close()
+                    
+                with open(mem, 'rb') as a:
+                    print map(ord, a.read(5))
+                    
                 trace =  arquivo.readlines()
                 for i in xrange(len(trace)):
                     trace[i] = trace[i].split()
