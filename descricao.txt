@@ -42,7 +42,7 @@ Este objeto contém t0, nome, espaco, e lista de posicoes e tempos de acesso.
 
 Quando iniciar a execução, avisa para todos os processos. (Objetos ou processos) (HOW?)
 *Signal - entender como funciona isso!!! (Parece que é só para processos)
-*Envia o time inicial do simulador?
+*Envia o time inicial do simulador? Isso parece que funciona...
 
 
 Cada processo terá uma função que dorme até que chega o seu tempo de execução, baseado no tempo que ele recebeu como aviso.
