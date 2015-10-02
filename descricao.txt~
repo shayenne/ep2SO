@@ -1,0 +1,48 @@
+====================================
+Detalhamento do comportamento do ep2
+====================================
+
+- Shell
+O shell responde a 5 comandos: carrega, espaco, substitui, executa e sai.
+
+O que acontece no programa quando se digita:
+> carrega [trace]
+O programa lê o arquivo [trace] e cria uma lista (list) com todos os processos que devem ser simulados, cada processo é uma lista que contém: t0, nome, nº de bytes que ocupa e uma lista com as posições e tempos de acesso a cada uma delas.
+Nesse momento também se define o tamanho da memória virtual e física que serão simuladas.
+
+> espaco [n]
+O programa define que tipo de algoritmo de busca de espaco livre será utilizado na simulação.
+Os algoritmos podem ser:
+1 - First Fit (primeira posição vazia que caiba)
+2 - Next Fit (próxima posição vazia que caiba)
+3 - Quick Fit (melhor tamanho que caiba)
+
+> substitui [n]
+O programa define que tipo de algoritmo de paginação será utilizado
+1 - NRUP
+
+2 - FIFO
+
+3 - SCP
+
+4 - LRUP
+
+
+> executa [tempo]
+Inicia a execução da simulação.
+Cria os arquivos de memória /tmp/ep2.mem e /tmp/ep2.vir com o tamanho definido e preenche com '-1'.
+A cada [tempo] segundos, imprime o estado das memórias (?) e o conteúdo da lista que mantém o status da memória.
+
+Como funciona daqui para frente?
+O tempo vai passar, e haverão processos chegando, processos pedindo para ver posicoes, como eu controlo ou verifico isso?
+
+*****
+Ideia: para cada processo cria um objeto processo.
+Este objeto contém t0, nome, espaco, e lista de posicoes e tempos de acesso.
+
+Quando iniciar a execução, avisa para todos os processos. (HOW?)
+Signal - entender como funciona isso!!! (Parece que é só para processos)
+
+Cada processo terá uma função que dorme até que chega o seu tempo de execução, baseado no tempo que ele recebeu como aviso.
+Chegando o seu tempo, ele tenta alocar um espaço na memória, caso seja o t0, ou acessar uma posicao na memoria fisica, olhando para a sua lista.
+
