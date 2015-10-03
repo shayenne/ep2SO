@@ -71,10 +71,12 @@ if __name__ == "__main__":
             threads = []
             inicio = time.time()
             for p in proc:
-                t = threading.Thread(target = p.iniciaContagem(inicio))
+                t = threading.Thread(target=p.iniciaContagem, args=(inicio, ))
                 threads.append(t)
             for t in threads:
                 t.start()
+            for t in threads:
+                t.join()
 
 
         prompt = raw_input("[ep2]: ").split()
