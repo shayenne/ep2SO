@@ -48,3 +48,34 @@ Quando iniciar a execução, avisa para todos os processos. (Objetos ou processo
 Cada processo terá uma função que dorme até que chega o seu tempo de execução, baseado no tempo que ele recebeu como aviso.
 Chegando o seu tempo, ele tenta alocar um espaço na memória, caso seja o t0, ou acessar uma posicao na memoria fisica, olhando para a sua lista.
 
+***********************
+Alyssa passou por aqui
+***********************
+Suposicao geral do EP2
+1) os processos do arquivo trace.txt estarao ordenados segundo t0 de forma crescente
+2) os processos do arquivo trace.txt sao bem comportados no sentido de que nao irao escrever em lugares onde nao pertencem ao seu espaco [EX: p1 pede 16bytes de espaco e resolve escrever na posicao 42 -aqui estamos nos referindo que cada byte simula um endereco de memoria-]
+3) os processos na memoria virtual serao armazenados por inteiro e de forma continua [talvez tenha mais cara de suposicao para implementacao]
+
+**********************
+DUVIDAS
+- Vai ser possivel executar o programa sem escolher o algoritmo de paginacao e dos FITS? Seria bom fazer um default talvez?
+
+
+
+
+************************
+CONSIDERACOES GERAIS
+- Escrever a implementacao tomada no quick fit!
+
+- Criar lista de gerenciamento de memoria livre para a memoria virtual e memoria fisica onde o espaco de alocacao sera de 16bytes [especificado no ep] => essa sera a nossa pagina
+
+- Os algoritmos dos FITS serao chamados na criacao de um processo na memoria virtual e para verificacao de espaco na memoria fisica, tomando cuidado para que nao ocorra race condition entre as threads quando for acessar a memoria [semaforo]. Lembrando que a unidade de inicio / tamanho é por unidade de alocacao.
+
+- Os algoritmos FITs devem devolver a posicao inicial [base] que o processo ocupou para a MMU gerenciar o mapeamento. Caso nao encontre espaco necessario para o processo, avisar de alguma forma! [devolve -1, nao sei]
+
+- Quando o algoritmo FIT falhar em encontrar o espaco na memoria FISICA, significa que o algoritmo de paginacao sera acionado.
+
+- Criar uma funcao que arrume a lista de gerenciamento de memoria livre quando um processo terminar. Lembrando que aqui tambem ocorre race condition.
+
+- Uma vez que a MMU encontra o endereco correto para a escrita nao ocorre a condicao de corrida pois cada processo tem o seu proprio espaco de enderecamento.
+ 
