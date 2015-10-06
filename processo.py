@@ -10,12 +10,14 @@ class Processo:
         self.b = b
         self.acesso = lista
 
+    # Funcao que pede para alocar o espaco em bytes do processo na memoria virtual
     def alocaEspaco(self, espaco):
         print "Sou o processo {}. Quero alocar o meu espaco de {} bytes!!!".format(self.nome, espaco)
 
     def lePosicao(self, posicao):
         print "Sou o processo {}. Quero ver a posicao {}".format(self.nome, posicao)
 
+    # Funcao que sera executada por threads simulando um processo
     def iniciaContagem(self, inicio):
         espera = self.t0 - (time.time() - inicio)
         if espera > 0:
@@ -30,7 +32,7 @@ class Processo:
             print time.time()-inicio
             self.lePosicao(entry[0])
 
-        espera = self.tf - (time.time() - inicio)
+        espera = self.tf - self.t0 -(time.time() - inicio)
         if espera > 0:
             time.sleep(espera)
         print "O processo {} acabou. :(".format(self.nome)
