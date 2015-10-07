@@ -48,6 +48,10 @@ Quando iniciar a execução, avisa para todos os processos. (Objetos ou processo
 Cada processo terá uma função que dorme até que chega o seu tempo de execução, baseado no tempo que ele recebeu como aviso.
 Chegando o seu tempo, ele tenta alocar um espaço na memória, caso seja o t0, ou acessar uma posicao na memoria fisica, olhando para a sua lista.
 
++++++++++++++++++++++++++++
+Importante: Deve ter uma lista ligada de verdade!!!! http://ls.pwd.io/2014/08/singly-and-doubly-linked-lists-in-python/
+++++++++++++++++++++++++++++++
+
 ***********************
 Alyssa passou por aqui
 ***********************
