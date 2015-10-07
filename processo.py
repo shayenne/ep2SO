@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 import time
+from gerenciador import gerente
+
 
 class Processo:
 
     def __init__(self, t0, nome, tf, b, lista):
+        self.pid = nome
         self.t0 = t0
         self.nome = nome
         self.tf = tf
@@ -13,6 +16,8 @@ class Processo:
     # Funcao que pede para alocar o espaco em bytes do processo na memoria virtual
     def alocaEspaco(self, espaco):
         print "Sou o processo {}. Quero alocar o meu espaco de {} bytes!!!".format(self.nome, espaco)
+        print ""
+        gerente(espaco, self.pid)
 
     def lePosicao(self, posicao):
         print "Sou o processo {}. Quero ver a posicao {}".format(self.nome, posicao)

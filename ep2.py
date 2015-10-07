@@ -7,6 +7,7 @@ import time
 import threading
 from processo import *
 from arquivos import *
+from gerenciador import * 
 
 if __name__ == "__main__":
     # Variaveis importantes
@@ -54,7 +55,7 @@ if __name__ == "__main__":
         if prompt[0] == "espaco":
             try:
                 espaco = prompt[1]
-                defineGerenciador(espaco)
+                defineGerenciador(espaco, 16)
             except IndexError:
                 print "O algoritmo de gerenciamento de espaco livre nao foi definido"
             
@@ -67,9 +68,10 @@ if __name__ == "__main__":
            
                     
         if prompt[0] == "executa":
-      
+            # APAGAR
             espaco = 1
             substitui = 1
+            #
             try:
                 intervalo = prompt[1]
             except IndexError:
@@ -83,8 +85,12 @@ if __name__ == "__main__":
                 
             if arquivo and espaco and substitui and intervalo:
                 # Inicializa os arquivos de memoria total e virtual
-                makeEmptyBin(mem, 32)
+                makeEmptyBin(mem, total)
                 makeEmptyBin(vir, virtual)
+
+                # Cria a lista da memoria virtual
+                criaListaVirtual(virtual)
+                
                 # Acessa uma posicao especifica do arquivo de memoria
                 mapmem = memory_map(mem)
                 print len(mapmem)

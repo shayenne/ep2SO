@@ -2,30 +2,44 @@
 
 import sys
 import math
+from Lista import *
 
 # Variaveis globais
-atual = None
+ger = None
+lstvirtual = None
 tam = None
-last = 0
+last = None
 #
 
+def criaListaVirtual(t):
+    global lstvirtual, last, tam
+    lstvirtual = List()
+    lstvirtual.append(["L", 0, int(t/tam)])
+    last = lstvirtual.head
+    
 
-def defineGerenciador(num, tam):
-    global atual
-    atual = num
-
+def defineGerenciador(num, t):
+    global ger
+    global tam
+    ger = num
+    tam = t
+    
 
 def gerente(espaco, pid):
+    global lstvirtual
+    global tam
+    print 'ESTOU AQUI',  tam, espaco, ger
     inicio = None
     paginas = int(espaco / tam)
     if espaco % tam != 0:
         paginas += 1 
-    if   atual == 1:
-        inicio = FirstFit(lista, paginas)
-    elif atual == 2:
-        inicio = NextFit(lista, paginas)
-    elif atual == 3:
-        inicio = QuickFit(lista, paginas)
+    if ger == "1":
+        inicio = FirstFit(lstvirtual, pid, paginas)
+        print pid, paginas
+    elif ger == "2":
+        inicio = NextFit(lstvirtual, pid, paginas)
+    elif ger == "3":
+        inicio = QuickFit(lstvirtual, pid, paginas)
         
     # Ate aqui, o processo pediu um espaco em paginas para algum gerenciador
     # Em 'inicio' esta a posicao inicial do espaco que sera alocado para este processo     
@@ -34,32 +48,64 @@ def gerente(espaco, pid):
     return 
 
 
-# Recebe uma lista ligada e devolve a posicao de memoria em que o
-# processo pode ocupar (caso exista) ou None (caso nao exista)
-def FirstFit(lista, processo):
-    i = 0
-    
-    while (i < len(lista)):
-        if lista[i][0] == "L" and lista[i][2] >= processo:
-            i += 1
-            return lista[i-1][1]
-        i+=1
-        
+# Recebe uma lista ligada, o pid do processo e o tamanho que o processo
+# quer ocupar em paginas
+def FirstFit(lista, pid, processo):
+    atual = lista.head
+    while atual is not None:
+        if atual.data[0] == "L" and atual.data[2] >= processo:
+            pos = atual.data[1]
+
+            atual.data[0] = pid
+            if processo < atual.data[2]:
+                dif = atual.data[2] - processo
+                atual.data[2] = processo
+                lista.insert(["L", atual.data[1]+processo, dif], atual)
+
+            break
+        atual = atual.next
+    # APAGAR
+    lista.show("Virtual")
+    #
+    if atual is not None:
+        return atual.data[1]
+
     return None
 
-
-def NextFit(lista, processo):
+def NextFit(lista, pid, processo):
     global last
-    i = last
+    old = last
+    atual = last
+    while atual is not None:
+        if atual.data[0] == "L" and atual.data[2] >= processo:
+            pos = atual.data[1]
+
+            atual.data[0] = pid
+            if processo < atual.data[2]:
+                dif = atual.data[2] - processo
+                atual.data[2] = processo
+                lista.insert(["L", atual.data[1]+processo, dif], atual)
+                last = atual.next
+            break
+        if atual.next == None:
+            atual = lista.head
+
+        if atual.next == old:
+            atual = None
+            break
+        
+        atual = atual.next
+    # APAGAR
+    lista.show("Virtual")
+    #
+    if atual is not None:
+        return atual.data[1]
+
+    return None
     
-    for i in xrange(len(lista)):
-        ind = (i+last)%len(lista)
-        if lista[ind][0] == "L" and lista[ind][2] > processo:
-            last = ind + 1
-            return lista[ind][1]
 
         
-    #return None
+
 
 # Este e o BestFit, nao Quick :(
 def BestFit(lista, processo):
@@ -109,3 +155,17 @@ def QuickFit(lista, processo):
         encaixaNovo(l[0], l[1], processo)
     else:
         return False            
+
+
+if __name__ == "__main__":
+    lista = List()
+
+    lista.append(["L", 0, 2])
+    lista.append(["P", 2, 12])
+    lista.append(["L", 14, 5])
+    lista.append(["L", 19, 10])
+    lista.show("Fisica")
+    FirstFit(lista, 10, 3)
+    lista.show("Virtual")
+    FirstFit(lista, 20, 10)
+    lista.show("Virtual")
