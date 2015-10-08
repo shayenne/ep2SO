@@ -3,6 +3,7 @@
 import sys
 import math
 from Lista import *
+from MMU import *
 
 # Variaveis globais
 ger = None
@@ -44,7 +45,9 @@ def gerente(espaco, pid):
     # Ate aqui, o processo pediu um espaco em paginas para algum gerenciador
     # Em 'inicio' esta a posicao inicial do espaco que sera alocado para este processo     
        
-    # Passar esta 'inicio' e 'paginas' para a MMU 
+    # Passar esta 'inicio' e 'paginas' para a MMU
+
+    MMUalocaEspaco(pid, inicio, paginas)
     return 
 
 
