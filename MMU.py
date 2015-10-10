@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+from arquivos import *
+from Lista import *
+from gerenciador import *
 
 # Recebe um endereco da memoria virtual e devolve o endereco
 # da memoria fisica no qual esta mapeado.
@@ -8,25 +11,34 @@
 mapa = None
 tam = None
 processos = {}
+vir = None
+mem = None
+lstfisica = None
 
-# Recebe o tamanho da memoria virtual (em bytes) e o tamanho da pagina (em bytes)e cria um mapa de paginas
-def MMUcriaMapa(tmemoria, pagina):
-    global mapa, tam
+# Recebe o tamanho da memoria virtual (em bytes) e o tamanho da pagina (em bytes)e cria um mapa de paginas que contem endereco do page frame em que a pagina esta mapeada, bit Presente/Ausente e o bit R.
+# Mapa da MMU
+#    0           1        2 
+#|  P/A  |  PageFrame  |  R  | 
+def MMUcriaMapa(tmem, tvir, pagina, virtual, fisica):
+    global mapa, tam, vir, mem, lstfisica
+    vir = virtual
+    mem = fisica
     tam = pagina
-    mapa = [[0 for x in range((tmemoria/pagina))] for x in range(3)]
-    print mapa
+    lstfisica = List()
+    lstfisica.append(["L", 0, int(tmem/tam)])
+    mapa = [[0 for x in range(3)] for x in range(tvir/pagina)]
 
 
 def MMUacessaPosicao(pid, pos):
     global processos, tam
-    x =  MMUtraduzEndereco(processos[pid][0]*tam + pos)
-    if x:
-        # Escreve na posicao devolvida
-        print "Escrevi na posicao ", x, "da memoria fisica"
+    leuPosicao =  MMUtraduzEndereco(processos[pid][0],  pos)
+    if leuPosicao:
+        print "Li a posicao ", leuPosicao, "da memoria fisica"
+        leMemoria(mem, leuPosicao)
     else:
-        y = FirstFit(lstfisica, pid, 1)
-        if y:
-            #copiaPagina(vir, processos[pid][0]*tam, mem, y, tam)
+        encontrouEspaco = FirstFit(lstfisica, pid, 1)
+        if encontrouEspaco:
+            copiaPagina(vir, processos[pid][0]*tam, mem, encontrouEspaco, tam)
             print "Copiei da memoria virtual para a fisica"
         # Chama o algoritmo de substituicao
         
@@ -34,13 +46,23 @@ def MMUacessaPosicao(pid, pos):
 # Guarda num dicionario o processo associado a sua base e limite (em paginas)
 def MMUalocaEspaco(pid, inicio, paginas):
     global processos
-    processos[pid] = [inicio, inicio+paginas]
+    processos[pid] = [inicio, inicio+paginas] 
+    print processos
 
+# Recebe a base (em paginas) e uma posicao (em bytes) e mapeia para um endereco da memoria fisica (em bytes)
+def MMUtraduzEndereco(base, pos):
+    local = pos / tam
+    # Correcao de indices
+    if pos%tam == 0:
+        local -= 1
 
-# Recebe um endereco virtual (em bytes) e mapeia para um endereco da memoria fisica (em bytes)
-def MMUtraduzEndereco(endvirtual):
-    return False
-    return endfisico
+    # Verificar se a pagina esta mapeada na memoria fisica
+    if mapa[base + local][0] == 1:
+        print "Encontrei a pagina na memoria fisica"
+        return mapa[base+local][1]*tam + pos
+    else:        
+        print "Nao encontrei a pagina na memoria fisica"
+        return False
 
     
 

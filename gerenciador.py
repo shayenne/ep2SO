@@ -10,7 +10,9 @@ ger = None
 lstvirtual = None
 tam = None
 last = None
+vir = None
 #
+
 
 def criaListaVirtual(t):
     global lstvirtual, last, tam
@@ -19,16 +21,16 @@ def criaListaVirtual(t):
     last = lstvirtual.head
     
 
-def defineGerenciador(num, t):
-    global ger
-    global tam
+def defineGerenciador(num, t, virtual ):
+    global ger, vir, tam
+    vir = virtual
     ger = num
     tam = t
     
 
 def gerente(espaco, pid):
-    global lstvirtual
-    global tam
+    global lstvirtual, tam, vir
+
     print 'ESTOU AQUI',  tam, espaco, ger
     inicio = None
     paginas = int(espaco / tam)
@@ -41,12 +43,12 @@ def gerente(espaco, pid):
         inicio = NextFit(lstvirtual, pid, paginas)
     elif ger == "3":
         inicio = QuickFit(lstvirtual, pid, paginas)
-        
+    print inicio, paginas
     # Ate aqui, o processo pediu um espaco em paginas para algum gerenciador
     # Em 'inicio' esta a posicao inicial do espaco que sera alocado para este processo     
        
     # Passar esta 'inicio' e 'paginas' para a MMU
-
+    escreveMemoria(vir, inicio*tam, (inicio+paginas)*tam, pid)
     MMUalocaEspaco(pid, inicio, paginas)
     return 
 

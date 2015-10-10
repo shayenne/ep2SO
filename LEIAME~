@@ -1,4 +1,0 @@
-Precisei instalar o python-nmap
-
-Para escrever os inteiros, basta converte-los para chr() e colocá-los no nmap :)
-

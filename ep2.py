@@ -8,8 +8,13 @@ import threading
 from processo import *
 from arquivos import *
 from gerenciador import * 
+from MMU import *
+
+global tampag
 
 if __name__ == "__main__":
+    global tampag
+    tampag = 16
     # Variaveis importantes
     arquivo = None
     espaco = None
@@ -25,11 +30,12 @@ if __name__ == "__main__":
         
         if prompt[0] == "carrega":
             try:
-                print "Tenho que carregar o arquivo {}.".format(prompt[1])
                 arquivo = open(prompt[1], 'r')
+
                 total, virtual = map(int, arquivo.readline().split())
                     
                 trace =  arquivo.readlines()
+                ind = 0
                 for t in trace:
                     t = t.split()
                     t[0] = int(t[0])
@@ -39,23 +45,21 @@ if __name__ == "__main__":
                         x, y = t[i:i+2]
                         par.append([x, y])
                     p = Processo(t[0], t[1], t[2], t[3], par)
+                    p.pid = ind
+                    ind += 1
                     proc.append(p)
-                #print total, virtual
-                #print trace
-                arquivo.close()
-                #f.imprimeTempo(trace)
-                
-                        
+
+                arquivo.close()      
                 
             except IOError:
                 print "Arquivo inexistente"
             except IndexError:
                 print "Digite o caminho do arquivo"
             
+
         if prompt[0] == "espaco":
             try:
                 espaco = prompt[1]
-                defineGerenciador(espaco, 16)
             except IndexError:
                 print "O algoritmo de gerenciamento de espaco livre nao foi definido"
             
@@ -69,8 +73,8 @@ if __name__ == "__main__":
                     
         if prompt[0] == "executa":
             # APAGAR
-            espaco = 1
-            substitui = 1
+            espaco = "1"
+            substitui = "1"
             #
             try:
                 intervalo = prompt[1]
@@ -88,8 +92,15 @@ if __name__ == "__main__":
                 makeEmptyBin(mem, total)
                 makeEmptyBin(vir, virtual)
 
+                # Define o gerenciador de espaco livre a ser usado
+                # Junto com o tamanho da pagina
+                defineGerenciador(espaco, tampag, vir)
+
                 # Cria a lista da memoria virtual
                 criaListaVirtual(virtual)
+
+                # Cria mapa da MMU
+                MMUcriaMapa(total, virtual, tampag, mem, vir)
                 
                 # Acessa uma posicao especifica do arquivo de memoria
                 mapmem = memory_map(mem)
@@ -101,7 +112,7 @@ if __name__ == "__main__":
                 #mapmem[2] = chr(16)
                 mapmem.close()
                 
-                escreveMemoria(mem, 2, 8)    
+                #escreveMemoria(mem, 2, 8)    
                 #with open(mem, 'rb') as a:
                 #    print map(ord, a.read(5))
                 

@@ -1,12 +1,12 @@
 #!/usr/bin/env python
 import time
 from gerenciador import gerente
-
+from MMU import MMUacessaPosicao
 
 class Processo:
 
     def __init__(self, t0, nome, tf, b, lista):
-        self.pid = nome
+        self.pid = None
         self.t0 = t0
         self.nome = nome
         self.tf = tf
@@ -22,7 +22,7 @@ class Processo:
 
     def lePosicao(self, posicao):
         # Chama a MMU, pedindo para ver a posicao + base
-        #MMUacessaPosicao(posicao)
+        MMUacessaPosicao(self.pid, posicao)
         print "Sou o processo {}. Quero ver a posicao {}".format(self.nome, posicao)
 
     # Funcao que sera executada por threads simulando um processo

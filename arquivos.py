@@ -21,21 +21,27 @@ def memory_map(filename, access=mmap.ACCESS_WRITE):
     fd = os.open(filename, os.O_RDWR)
     return mmap.mmap(fd, size, access=access)
 
-def escreveMemoria(arqmem, pos, pid):
+def escreveMemoria(arqmem, ini, fim, pid):
     # Acessa uma posicao especifica do arquivo de memoria
     mapmem = memory_map(arqmem)
-    print len(mapmem)
+
+    for i in xrange(ini, fim):
+        mapmem[i] = chr(pid)
+
     print mapmem[0:len(mapmem)]
-    print mapmem[0]
-    print pos, pid
-    mapmem[pos] = chr(pid)
     mapmem.close()
                     
-    #with open(mem, 'rb') as a:
-    #    print map(ord, a.read(5))
+
+
+def leMemoria(arqmem, pos):
+    # Acessa uma posicao especifica do arquivo de memoria
+    mapmem = memory_map(arqmem)
+    print mapmem[pos]
+    mapmem.close()
     
     
 def copiaPagina(orig, oini, dest, dini, tam):
+    print "CHEGUEI NO COPIA PAGINA"
     maporig = memory_map(orig)
     mapdest = memory_map(dest)
     for i in xrange(tam):
