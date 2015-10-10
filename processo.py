@@ -30,14 +30,16 @@ class Processo:
         espera = self.t0 - (time.time() - inicio)
         if espera > 0:
             time.sleep(espera)
-        print time.time() - inicio
+        
         self.alocaEspaco(self.b)
+    
+        print "ESSA E MINHA LISTA", self.acesso
 
         for entry in self.acesso:
             espera = entry[1] - (time.time() - inicio)
             if espera > 0:
                 time.sleep(espera)
-            print time.time()-inicio
+            
             self.lePosicao(entry[0])
 
         espera = self.tf - self.t0 -(time.time() - inicio)

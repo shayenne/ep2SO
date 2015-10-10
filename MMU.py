@@ -2,7 +2,7 @@
 
 from arquivos import *
 from Lista import *
-from gerenciador import *
+import gerenciador
 
 # Recebe um endereco da memoria virtual e devolve o endereco
 # da memoria fisica no qual esta mapeado.
@@ -31,14 +31,22 @@ def MMUcriaMapa(tmem, tvir, pagina, virtual, fisica):
 
 def MMUacessaPosicao(pid, pos):
     global processos, tam
+    print ">>TO TENTANDO ACESSAR AQUI", pos
     leuPosicao =  MMUtraduzEndereco(processos[pid][0],  pos)
     if leuPosicao:
         print "Li a posicao ", leuPosicao, "da memoria fisica"
         leMemoria(mem, leuPosicao)
     else:
-        encontrouEspaco = FirstFit(lstfisica, pid, 1)
+        encontrouEspaco = gerenciador.FirstFit(lstfisica, pid, 1)
+        lstfisica.show("Fisica")
+        print encontrouEspaco
         if encontrouEspaco:
-            copiaPagina(vir, processos[pid][0]*tam, mem, encontrouEspaco, tam)
+            local = pos / tam
+            if pos % tam == 0:
+                local -= 1
+            print "INICIO DA COPIA DA VIRTUAL: ", processos[pid][0]+local
+            copiaPagina(vir, (processos[pid][0]+local)*tam, mem, encontrouEspaco*tam, tam)
+            #copiaPagina(mem, encontrouEspaco*tam, vir, (processos[pid][0]+local)*tam, tam)
             print "Copiei da memoria virtual para a fisica"
         # Chama o algoritmo de substituicao
         

@@ -54,14 +54,15 @@ def main():
     m = "ep2.mem"
     n = "ep2.vir"
     makeEmptyBin(n, 32)
+    makeEmptyBin(m, 32)
     
-    escreveMemoria(m, 2, 50)
+    escreveMemoria(n, 1, 7, 50)
     
-    copiaPagina(m, 0, n, 2, 16)
+    copiaPagina(n, 0, m, 8, 16)
     
-    escreveMemoria(m, 11, 42)
+    #escreveMemoria(m, 1, 11, 42)
     
-    copiaPagina(m, 0, n, 8, 16)
+    #copiaPagina(m, 0, n, 8, 16)
     
 if __name__ == "__main__":
     main()

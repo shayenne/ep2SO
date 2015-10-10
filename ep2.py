@@ -41,7 +41,7 @@ if __name__ == "__main__":
                     t[0] = int(t[0])
                     t[2:len(t)] = map(int, t[2:len(t)])
                     par = []
-                    for i in xrange(4, len(t)-2):
+                    for i in xrange(4, len(t), 2):
                         x, y = t[i:i+2]
                         par.append([x, y])
                     p = Processo(t[0], t[1], t[2], t[3], par)
