@@ -83,3 +83,11 @@ CONSIDERACOES GERAIS
 
 - Uma vez que a MMU encontra o endereco correto para a escrita nao ocorre a condicao de corrida pois cada processo tem o seu proprio espaco de enderecamento.
  
+
+
+*******************************
+Alyssa passou por aqui de novo
+*******************************
+- bit M nao e necessario pois as paginas chamadas nunca serao modificadas.
+
+- lembrando que de tempos em tempos o bit R tera de ser resetado

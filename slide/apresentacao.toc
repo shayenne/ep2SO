@@ -1,0 +1,15 @@
+\beamer@endinputifotherversion {3.10pt}
+\select@language {portuguese}
+\beamer@sectionintoc {1}{Objetivo}{3}{0}{1}
+\beamer@sectionintoc {2}{Shell}{5}{0}{2}
+\beamer@sectionintoc {3}{Visao Geral}{6}{0}{3}
+\beamer@sectionintoc {4}{Gerenciador de Espa\IeC {\c c}o Livre}{9}{0}{4}
+\beamer@subsectionintoc {4}{1}{First Fit}{9}{0}{4}
+\beamer@subsectionintoc {4}{2}{Next Fit}{10}{0}{4}
+\beamer@subsectionintoc {4}{3}{Quick Fit}{11}{0}{4}
+\beamer@sectionintoc {5}{Substitui\IeC {\c c}ao de Pagina}{12}{0}{5}
+\beamer@subsectionintoc {5}{1}{NRUP}{12}{0}{5}
+\beamer@subsectionintoc {5}{2}{FIFO}{13}{0}{5}
+\beamer@subsectionintoc {5}{3}{Second Chance}{14}{0}{5}
+\beamer@subsectionintoc {5}{4}{LRUP}{15}{0}{5}
+\beamer@sectionintoc {6}{Resultados}{16}{0}{6}

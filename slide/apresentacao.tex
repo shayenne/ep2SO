@@ -1,0 +1,338 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Beamer Presentation
+% LaTeX Template
+% Version 1.0 (10/11/12)
+%
+% This template has been downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% License:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND THEMES
+%----------------------------------------------------------------------------------------
+
+\documentclass{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage[portuguese]{babel}
+\usepackage{ragged2e}
+\usepackage{url}
+\mode<presentation> {
+
+% The Beamer class comes with a number of default slide themes
+% which change the colors and layouts of slides. Below this is a list
+% of all the themes, uncomment each in turn to see what they look like.
+
+%\usetheme{default}
+%\usetheme{AnnArbor}
+%\usetheme{Antibes}
+%\usetheme{Bergen}
+\usetheme{Berkeley}
+%\usetheme{Berlin}
+%\usetheme{Boadilla}
+%\usetheme{CambridgeUS}
+%\usetheme{Copenhagen}
+%\usetheme{Darmstadt}
+%\usetheme{Dresden}
+%\usetheme{Frankfurt}
+%\usetheme{Goettingen}
+%\usetheme{Hannover}
+%\usetheme{Ilmenau}
+%\usetheme{JuanLesPins}
+%\usetheme{Luebeck}
+%\usetheme{Madrid}
+%\usetheme{Malmoe}
+%\usetheme{Marburg}
+%\usetheme{Montpellier}
+%\usetheme{PaloAlto}
+%\usetheme{Pittsburgh}
+%\usetheme{Rochester}
+%\usetheme{Singapore}
+%\usetheme{Szeged}
+%\usetheme{Warsaw}
+
+% As well as themes, the Beamer class has a number of color themes
+% for any slide theme. Uncomment each of these in turn to see how it
+% changes the colors of your current slide theme.
+
+%\usecolortheme{albatross}
+% Mesma cor do trabalho original
+%\usecolortheme{beaver}
+%\usecolortheme{beetle}
+%\usecolortheme{crane}
+%\usecolortheme{dolphin}
+%\usecolortheme{dove}
+%\usecolortheme{fly}
+%\usecolortheme{lily}
+%\usecolortheme{orchid}
+%\usecolortheme{rose}
+%\usecolortheme{seagull}
+%\usecolortheme{seahorse}
+\usecolortheme{whale}
+%\usecolortheme{wolverine}
+
+%\setbeamertemplate{footline} % To remove the footer line in all slides uncomment this line
+\setbeamertemplate{footline}[page number] % To replace the footer line in all slides with a simple slide count uncomment this line
+
+%\setbeamertemplate{navigation symbols}{} % To remove the navigation symbols from the bottom of all slides uncomment this line
+}
+\usepackage{caption}
+\usepackage{graphicx} % Allows including images
+\usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title{EP2 - Gerenciador de Memoria} % The short title appears at the bottom of every slide, the full title is only on the title page
+
+\author{Florence Alyssa \and Shayenne Moura} % Your name
+\institute[USP] % Your institution as it will appear on the bottom of every slide, may be shorthand to save space
+{
+Sistemas Operacionais
+ \\ Bacharelado em Ciência da Computação% Your institution for the title page
+\medskip
+\textit{} % Your email address
+}
+\date{19 de outubro de 2015} % Date, can be changed to a custom date
+
+
+
+
+
+\begin{document}
+
+\begin{frame}
+\titlepage % Print the title page as the first slide
+\end{frame}
+
+\begin{frame}
+\frametitle{Sumário}
+\tableofcontents
+\end{frame}
+
+
+%\begin{frame}
+%\frametitle{Visão Geral} % Table of contents slide, comment this block out to remove it
+%\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
+%\end{frame}
+
+%----------------------------------------------------------------------------------------
+%	PRESENTATION SLIDES
+%----------------------------------------------------------------------------------------
+
+%------------------------------------------------
+\section{Objetivo} 
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Objetivo}
+Implementar um simulador de gerenciamento de memoria com diversos algoritmos para gerencia de espaco livre e substituiçao de pagina.
+
+Linguagem: Python
+\end{frame}
+
+\begin{frame}
+\frametitle{Suposicoes adotadas}
+\begin{itemize}
+\item processos ordenados segundo t0 de forma crescente
+\item processos bem comportados (nao escrevem onde nao devem)
+\item espaço suficiente na memoria virtual
+\item processos armazenados de forma integral e continuas na memoria virtual
+\item tempo de execuçao do processo: tf - t0
+\end{itemize}
+
+\end{frame}
+
+\section{Shell}
+\begin{frame}
+\frametitle{Shell}
+
+5 comandos: carrega, espaco, substitui, executa e sai.
+
+> carrega [trace] 
+  Cria uma lista para cada processo contendo os campos: 
+  t0, nome, tf, espaço(byte), p1 t1, p2 t2, ... , pn tn
+
+> espaco ou substitui
+  Define variaveis de inicializacao do gerenciador de espaco livre e algoritmo de substituicao de paginas
+
+> executa [intervalo]
+  Cria listas de espaco livre e os arquivos ep2.mem e ep2.vir preenchidos com '-1'
+  Simula e imprime do estado da memoria a cada [intervalo]s
+  
+> sai
+  Termina execucao do simulador  
+
+\end{frame}
+%------------------------------------------------
+%------------------------------------------------
+\section{Visao Geral} 
+%------------------------------------------------
+\begin{frame}
+\frametitle{Processos}
+
+- Processo como objeto (com informacao da lista)
+
+- Thread por processo
+
+- Sinal para inicializacao
+
+- Dormem ate t0
+
+- Em t0: alocacao de espaco na memoria virtual (semaforo)
+
+- Preenchimento do espaco com pid
+
+- Criacao de dicionario: pid - base - limite
+\justifying
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Processos}
+
+- Em t0: alocacao de espaco na memoria virtual (semaforo)
+
+- Preenchimento do espaco com pid
+
+- Criacao de dicionario: pid  base  limite (em paginas)
+\justifying
+\end{frame}
+
+
+
+\begin{frame}
+IMAGEM!
+%imagem
+\justifying
+\end{frame}
+
+%------------------------------------------------
+\section{Gerenciador de Espaço Livre} 
+%------------------------------------------------
+%------------------------------------------------
+\subsection{First Fit}
+%------------------------------------------------
+\begin{frame}
+\frametitle{First Fit}
+
+
+\justifying
+\end{frame}
+
+%------------------------------------------------
+\subsection{Next Fit} 
+%------------------------------------------------
+
+\begin{frame}
+
+IMAGEM?
+
+- Na lista de espaço livre verifica se lista[0] == 'L'
+- Verifica se tem espaco em lista[2]
+
+
+\justifying
+
+
+\begin{frame}
+\frametitle{Next Fit}
+
+
+\justifying
+\end{frame}
+
+%------------------------------------------------
+\subsection{Quick Fit}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Shortest Remaining Time Next}
+
+\justifying
+\end{frame}
+
+\section{Substituiçao de Pagina}
+%------------------------------------------------
+\subsection{NRUP} 
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Not Recently Used Page}
+
+\justifying
+\end{frame}
+
+
+
+
+%------------------------------------------------
+\subsection{FIFO} 
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{First In First Out}
+
+\justifying
+
+\end{frame}
+
+%------------------------------------------------
+\subsection{Second Chance} 
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{Second Chance}
+
+\justifying
+\end{frame}
+
+%------------------------------------------------
+\subsection{LRUP}
+%------------------------------------------------
+\begin{frame}
+\frametitle{Least Recently Used Page}
+
+
+\justifying
+\end{frame}
+%------------------------------------------------
+\section{Resultados} 
+%------------------------------------------------
+
+\begin{frame}
+\frametitle{FCFS} 
+\justifying
+\end{frame}
+
+\begin{frame}
+\frametitle{SJF} 
+\justifying
+\end{frame}
+
+\begin{frame}
+\frametitle{SRTN} 
+\justifying
+\end{frame}
+
+\begin{frame}
+\frametitle{RR} 
+\justifying
+\end{frame}
+
+\begin{frame}
+\frametitle{Escalonamento com prioridade} 
+\justifying
+\end{frame}
+
+\begin{frame}
+\frametitle{Escalonamento em tempo real} 
+\justifying
+\end{frame}
+
+
+
+\end{document}
