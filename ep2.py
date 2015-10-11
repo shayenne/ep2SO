@@ -5,12 +5,18 @@ import funcoes as f
 import struct
 import time
 import threading
+from RepeatedTimer import *
 from processo import *
 from arquivos import *
 from gerenciador import * 
 from MMU import *
 
 global tampag
+
+def imprimeEstado(intervalo):
+    print "Esperei ", intervalo, "segundos :P"
+    MMUimprimeFisica()
+    GERimprimeVirtual()
 
 if __name__ == "__main__":
     global tampag
@@ -34,6 +40,7 @@ if __name__ == "__main__":
 
                 total, virtual = map(int, arquivo.readline().split())
                     
+                # Trata a entrada e cria os processos
                 trace =  arquivo.readlines()
                 ind = 0
                 for t in trace:
@@ -77,7 +84,7 @@ if __name__ == "__main__":
             substitui = "1"
             #
             try:
-                intervalo = prompt[1]
+                intervalo = int(prompt[1])
             except IndexError:
                 print "O intervalo de tempo nao foi definido"
             if not arquivo:
@@ -100,31 +107,32 @@ if __name__ == "__main__":
                 criaListaVirtual(virtual)
 
                 # Cria mapa da MMU
-                MMUcriaMapa(total, virtual, tampag, mem, vir)
+                MMUcriaMapa(total, virtual, tampag, vir, mem)
                 
-                # Acessa uma posicao especifica do arquivo de memoria
-                mapmem = memory_map(mem)
-                print len(mapmem)
-                print mapmem[0:10]
-                print mapmem[0]
-                #mapmem[4] = chr(64)
-                #mapmem[0] = chr(2)
-                #mapmem[2] = chr(16)
-                mapmem.close()
-                
-                #escreveMemoria(mem, 2, 8)    
-                #with open(mem, 'rb') as a:
-                #    print map(ord, a.read(5))
-                
+                # Cria as threads de cada processo
                 threads = []
                 inicio = time.time()
                 for p in proc:
                     t = threading.Thread(target=p.iniciaContagem, args=(inicio, ))
                     threads.append(t)
-                for t in threads:
-                    t.start()
-                for t in threads:
-                    t.join()
 
+                rt = RepeatedTimer(intervalo, imprimeEstado, intervalo)
+
+                #t = threading.Thread(target=imprimeEstado, args=(inicio, intervalo))    
+                #t.deamon = True
+                #t.start()
+                try:
+                    # Inicia a execucao de todos os processos
+                    for t in threads:
+                        t.start()
+                    # Espera a finalizacao de todos os processos
+                    for t in threads:
+                        t.join()
+                finally:
+                    rt.stop()
 
         prompt = raw_input("[ep2]: ").split()
+
+
+
+        

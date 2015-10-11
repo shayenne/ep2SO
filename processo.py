@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 import time
 from gerenciador import gerente
-from MMU import MMUacessaPosicao
+from MMU import MMUacessaPosicao, MMUterminaProcesso
 
 class Processo:
 
@@ -20,31 +20,40 @@ class Processo:
         print ""
         gerente(espaco, self.pid)
 
+
+
     def lePosicao(self, posicao):
-        # Chama a MMU, pedindo para ver a posicao + base
-        MMUacessaPosicao(self.pid, posicao)
+        # Chama a MMU, pedindo para ver a posicao
         print "Sou o processo {}. Quero ver a posicao {}".format(self.nome, posicao)
+        MMUacessaPosicao(self.pid, posicao)
+
+
+
 
     # Funcao que sera executada por threads simulando um processo
     def iniciaContagem(self, inicio):
+        # Espera chegar o seu tempo de inicio
         espera = self.t0 - (time.time() - inicio)
         if espera > 0:
             time.sleep(espera)
         
+        # Pede para ser carregado na memoria
         self.alocaEspaco(self.b)
-    
-        print "ESSA E MINHA LISTA", self.acesso
 
+        # Para cada posicao a ser acessada, espera seu tempo
         for entry in self.acesso:
             espera = entry[1] - (time.time() - inicio)
             if espera > 0:
                 time.sleep(espera)
-            
+            # Pede para acessar a posicao
             self.lePosicao(entry[0])
 
+        # Espera chegar o seu fim
         espera = self.tf - self.t0 -(time.time() - inicio)
         if espera > 0:
             time.sleep(espera)
+        # Avisa que terminou
+        MMUterminaProcesso(self.pid)
         print "O processo {} acabou. :(".format(self.nome)
 
 def main():

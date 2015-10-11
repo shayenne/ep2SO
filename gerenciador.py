@@ -21,36 +21,49 @@ def criaListaVirtual(t):
     last = lstvirtual.head
     
 
-def defineGerenciador(num, t, virtual ):
+def defineGerenciador(num, t, virtual):
     global ger, vir, tam
     vir = virtual
     ger = num
     tam = t
-    
 
+
+# Imprime o estado da memoria virtual
+def GERimprimeVirtual():
+    lstvirtual.show("Status da Memoria Virtual")
+
+
+# Atribui um espaco para um processo que chega, de acordo com o algoritmo escolhido
 def gerente(espaco, pid):
     global lstvirtual, tam, vir
 
-    print 'ESTOU AQUI',  tam, espaco, ger
-    inicio = None
-    paginas = int(espaco / tam)
-    if espaco % tam != 0:
-        paginas += 1 
-    if ger == "1":
-        inicio = FirstFit(lstvirtual, pid, paginas)
-        print pid, paginas
-    elif ger == "2":
-        inicio = NextFit(lstvirtual, pid, paginas)
-    elif ger == "3":
-        inicio = QuickFit(lstvirtual, pid, paginas)
-    print inicio, paginas
+    lock = threading.Lock()
+
+    lock.acquire()
+    try:
+        inicio = None
+        paginas = int(espaco / tam)
+        if espaco % tam != 0:
+            paginas += 1 
+        if ger == "1":
+            inicio = FirstFit(lstvirtual, pid, paginas)
+            print "O processo de pid ", pid," ganhou ", paginas, "paginas e inicia em ", inicio
+        elif ger == "2":
+            inicio = NextFit(lstvirtual, pid, paginas)
+        elif ger == "3":
+            inicio = QuickFit(lstvirtual, pid, paginas)
+    finally:
+        lock.release()
     # Ate aqui, o processo pediu um espaco em paginas para algum gerenciador
     # Em 'inicio' esta a posicao inicial do espaco que sera alocado para este processo     
        
     # Passar esta 'inicio' e 'paginas' para a MMU
+    # Escreve na memoria virtual todas as posicoes alocadas para o processo o seu pid
     escreveMemoria(vir, inicio*tam, (inicio+paginas)*tam, pid)
     MMUalocaEspaco(pid, inicio, paginas)
-    return 
+    
+        
+    
 
 
 # Recebe uma lista ligada, o pid do processo e o tamanho que o processo

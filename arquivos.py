@@ -28,7 +28,6 @@ def escreveMemoria(arqmem, ini, fim, pid):
     for i in xrange(ini, fim):
         mapmem[i] = chr(pid)
 
-    print mapmem[0:len(mapmem)]
     mapmem.close()
                     
 
@@ -41,7 +40,6 @@ def leMemoria(arqmem, pos):
     
     
 def copiaPagina(orig, oini, dest, dini, tam):
-    print "CHEGUEI NO COPIA PAGINA"
     maporig = memory_map(orig)
     mapdest = memory_map(dest)
     for i in xrange(tam):
