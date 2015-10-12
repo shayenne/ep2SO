@@ -22,8 +22,8 @@ lstfisica = None
 # esta mapeada, bit Presente/Ausente e o bit R.
 #
 # Mapa da MMU
-#    0           1        2 
-#|  P/A  |  PageFrame  |  R  | 
+#    0           1        2        3
+#|  P/A  |  PageFrame  |  R  |  Counter  |
 def MMUcriaMapa(tmem, tvir, pagina, virtual, fisica):
     global mapa, tam, vir, mem, lstfisica
     vir = virtual
@@ -31,7 +31,7 @@ def MMUcriaMapa(tmem, tvir, pagina, virtual, fisica):
     tam = pagina
     lstfisica = List()
     lstfisica.append(["L", 0, int(tmem/tam)])
-    mapa = [[0 for x in range(3)] for x in range(tvir/pagina)]
+    mapa = [[0 for x in range(4)] for x in range(tvir/pagina)]
 
 
 # Imprime o estado da lista de memoria Fisica
@@ -60,16 +60,25 @@ def MMUacessaPosicao(pid, pos):
                 # Calcula qual pagina do processo deve ser carregada
                 local = pos / tam
         
-                if pos != 0 and pos % tam == 0:
-                    local -= 1
+                #if pos != 0 and pos % tam == 0:
+                #    local -= 1
 
-                copiaPagina(vir, (processos[pid][0]+local)*tam, mem, encontrouEspaco*tam, tam)
-                mapa[processos[pid][0]+local][0] = 1
-                mapa[processos[pid][0]+local][1] = encontrouEspaco
+                base = processos[pid][0]
+                copiaPagina(vir, (base+local)*tam, mem, encontrouEspaco*tam, tam)
+                # Seta o bit para Presente
+                mapa[base+local][0] = 1
+                # Coloca o page frame em que esta o pagina
+                mapa[base+local][1] = encontrouEspaco
+                # Seta o bit R (Request/Read)
+                mapa[base+local][2] = 1
+                # Atualiza o contador
+                mapa[base+local][3] += 1
                 print mapa
                 #copiaPagina(mem, encontrouEspaco*tam, vir, (processos[pid][0]+local)*tam, tam)
                 print "Copiei da memoria virtual para a fisica"
                 # Chama o algoritmo de substituicao
+            MMUacessaPosicao(pid, pos)
+            
     finally:
         lock.release()
     
@@ -83,13 +92,13 @@ def MMUalocaEspaco(pid, inicio, paginas):
 def MMUtraduzEndereco(base, pos):
     local = pos / tam
     # Correcao de indices
-    if pos != 0 and pos%tam == 0:
-        local -= 1
+    #if pos != 0 and pos%tam == 0:
+    #    local -= 1
 
     # Verificar se a pagina esta mapeada na memoria fisica
     if mapa[base + local][0] == 1:
         print "Encontrei a pagina na memoria fisica"
-        return mapa[base+local][1]*tam + pos
+        return mapa[base+local][1]*tam + pos % tam
     else:        
         print "Nao encontrei a pagina na memoria fisica"
         return None
@@ -109,6 +118,11 @@ def MMUterminaProcesso(pid):
             break
         curr = curr.next
 
+    # Retira o processo do mapa
+    base = processos[pid][0]
+    paginas = processos[pid][1]
+    for i in xrange(paginas):
+        mapa[base+i] = [0 for x in range(4)]
 
     lstfisica.show("Fisica apos remocao do processo")
 
