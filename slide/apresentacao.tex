@@ -82,7 +82,6 @@
 \usepackage{caption}
 \usepackage{graphicx} % Allows including images
 \usepackage{booktabs} % Allows the use of \toprule, \midrule and \bottomrule in tables
-
 %----------------------------------------------------------------------------------------
 %	TITLE PAGE
 %----------------------------------------------------------------------------------------
@@ -111,7 +110,7 @@ Sistemas Operacionais
 
 \begin{frame}
 \frametitle{Sumário}
-\tableofcontents
+
 \end{frame}
 
 
@@ -130,19 +129,19 @@ Sistemas Operacionais
 
 \begin{frame}
 \frametitle{Objetivo}
-Implementar um simulador de gerenciamento de memoria com diversos algoritmos para gerencia de espaco livre e substituiçao de pagina.
+Implementar um simulador de gerenciamento de memória com diversos algorítmos para gerência de espaço livre e substituição de página.
 
 Linguagem: Python
 \end{frame}
 
 \begin{frame}
-\frametitle{Suposicoes adotadas}
+\frametitle{Suposições adotadas}
 \begin{itemize}
 \item processos ordenados segundo t0 de forma crescente
-\item processos bem comportados (nao escrevem onde nao devem)
-\item espaço suficiente na memoria virtual
-\item processos armazenados de forma integral e continuas na memoria virtual
-\item tempo de execuçao do processo: tf - t0
+\item processos bem comportados (não escrevem onde não devem)
+\item espaço suficiente na memória virtual
+\item processos armazenados de forma integral e contínuas na memoria virtual
+\item tempo de execução do processo: tf - t0
 \end{itemize}
 
 \end{frame}
@@ -151,75 +150,67 @@ Linguagem: Python
 \begin{frame}
 \frametitle{Shell}
 
-5 comandos: carrega, espaco, substitui, executa e sai.
+5 comandos: carrega, espaço, substitui, executa e sai.
 
 > carrega [trace] 
   Cria uma lista para cada processo contendo os campos: 
   t0, nome, tf, espaço(byte), p1 t1, p2 t2, ... , pn tn
 
 > espaco ou substitui
-  Define variaveis de inicializacao do gerenciador de espaco livre e algoritmo de substituicao de paginas
+  Define variáveis de inicialização do gerenciador de espaço livre e algorítmo de substituição de páginas
 
 > executa [intervalo]
-  Cria listas de espaco livre e os arquivos ep2.mem e ep2.vir preenchidos com '-1'
-  Simula e imprime do estado da memoria a cada [intervalo]s
+  Cria listas de espaço livre e os arquivos ep2.mem e ep2.vir preenchidos com '-1'
+  Simula e imprime do estado da memória a cada [intervalo]s
   
 > sai
-  Termina execucao do simulador  
+  Termina execução do simulador  
 
 \end{frame}
 %------------------------------------------------
 %------------------------------------------------
-\section{Visao Geral} 
+\section{Visão Geral} 
 %------------------------------------------------
 \begin{frame}
 \frametitle{Processos}
 
-- Processo como objeto (com informacao da lista)
+- Processo como objeto (com informação da lista)
 
 - Thread por processo
 
-- Sinal para inicializacao
+- Sinal para inicialização
 
 - Dormem ate t0
 
-- Em t0: alocacao de espaco na memoria virtual (semaforo)
+- Em t0: alocação de espaço na memrória virtual (semáforo)
 
-- Preenchimento do espaco com pid
+- Preenchimento do espaço com pid
 
-- Criacao de dicionario: pid - base - limite
+- Criação de dicionário: pid | base | limite
 \justifying
 \end{frame}
 
 
 \begin{frame}
 \frametitle{Processos}
-
-- Em t0: alocacao de espaco na memoria virtual (semaforo)
-
-- Preenchimento do espaco com pid
-
-- Criacao de dicionario: pid  base  limite (em paginas)
+IMAGEM
 \justifying
 \end{frame}
 
-
-
-\begin{frame}
-IMAGEM!
-%imagem
-\justifying
-\end{frame}
 
 %------------------------------------------------
 \section{Gerenciador de Espaço Livre} 
 %------------------------------------------------
 %------------------------------------------------
+
 \subsection{First Fit}
 %------------------------------------------------
 \begin{frame}
 \frametitle{First Fit}
-
+- A busca sempre começa pela cabeça da lista
+- Na lista de espaço livre verifica se lista[0] == 'L'
+- Verifica se tem espaco em lista[2]
+ 
 
 \justifying
 \end{frame}
@@ -229,18 +220,13 @@ IMAGEM!
 %------------------------------------------------
 
 \begin{frame}
+\frametitle{Next Fit}
 
 IMAGEM?
-
+- A busca inicialmente começa pela cabeça da lista
+- Nas buscas subsequentes começa de onde terminou
 - Na lista de espaço livre verifica se lista[0] == 'L'
 - Verifica se tem espaco em lista[2]
-
-
-\justifying
-
-
-\begin{frame}
-\frametitle{Next Fit}
 
 
 \justifying
@@ -250,7 +236,7 @@ IMAGEM?
 \subsection{Quick Fit}
 %------------------------------------------------
 \begin{frame}
-\frametitle{Shortest Remaining Time Next}
+\frametitle{Quick Fit}
 
 \justifying
 \end{frame}
@@ -274,7 +260,7 @@ IMAGEM?
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{First In First Out}
+\frametitle{First-In First-Out}
 
 \justifying
 
@@ -304,35 +290,24 @@ IMAGEM?
 %------------------------------------------------
 
 \begin{frame}
-\frametitle{FCFS} 
+\frametitle{NRU} 
 \justifying
 \end{frame}
 
 \begin{frame}
-\frametitle{SJF} 
+\frametitle{FIFO} 
 \justifying
 \end{frame}
 
 \begin{frame}
-\frametitle{SRTN} 
+\frametitle{Second Chance} 
 \justifying
 \end{frame}
 
 \begin{frame}
-\frametitle{RR} 
+\frametitle{LRU} 
 \justifying
 \end{frame}
-
-\begin{frame}
-\frametitle{Escalonamento com prioridade} 
-\justifying
-\end{frame}
-
-\begin{frame}
-\frametitle{Escalonamento em tempo real} 
-\justifying
-\end{frame}
-
 
 
 \end{document}
