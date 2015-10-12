@@ -13,7 +13,7 @@ last = None
 vir = None
 #
 
-
+# Inicializa a lista ligada da memoria virtual
 def criaListaVirtual(t):
     global lstvirtual, last, tam
     lstvirtual = List()
@@ -21,6 +21,8 @@ def criaListaVirtual(t):
     last = lstvirtual.head
     
 
+# Define globalmente o gerenciador, o tamanho de pagina e o 
+# tamanho da memoria virtual
 def defineGerenciador(num, t, virtual):
     global ger, vir, tam
     vir = virtual
@@ -33,7 +35,8 @@ def GERimprimeVirtual():
     lstvirtual.show("Status da Memoria Virtual")
 
 
-# Atribui um espaco para um processo que chega, de acordo com o algoritmo escolhido
+# Atribui um espaco para um processo que chega, de acordo com 
+# o algoritmo escolhido
 def gerente(espaco, pid):
     global lstvirtual, tam, vir
 
@@ -173,6 +176,53 @@ def QuickFit(lista, processo):
         encaixaNovo(l[0], l[1], processo)
     else:
         return False            
+
+
+def GERremoveProcesso(pid):
+    if ger != "3":
+        curr = lstvirtual.head
+        while curr is not None:
+            if curr.data[0] == pid:
+                liberaEspaco(lstvirtual, curr)
+                break
+        print "-- Removi o processo de pid ", pid
+    else:
+        print "Ainda nao fizemos o QuickFit :("
+
+
+
+def liberaEspaco(lst, node):
+    lst.show("Antes")
+    if node.prev is not None and node.prev.data[0] == "L" and node.next is not None and node.next.data[0] == "L":
+        local = node.prev.prev
+        new = ["L", node.prev.data[1], node.next.data[2]+node.data[2]+node.prev.data[2]]
+        lst.remove(node.prev.data)
+        lst.remove(node.data)
+        lst.remove(node.next.data)
+        lst.insert(new, local)
+        print "Primeiro"
+    
+    elif node.prev is not None and node.prev.data[0] == "L":
+        local = node.prev.prev
+        new = ["L", node.prev.data[1], node.data[2]+node.prev.data[2]]
+        lst.remove(node.prev.data)
+        lst.remove(node.data)
+        lst.insert(new, local)
+        print "Segundo"
+        
+    elif node.next is not None and node.next.data[0] == "L":
+        local = node.prev
+        new = ["L", node.data[1], node.next.data[2]+node.data[2]]
+        lst.remove(node.data)
+        lst.remove(node.next.data)
+        lst.insert(new, local)
+        print "Terceiro"
+
+    else:
+        node.data[0] = "L"
+        print "Quarto"
+    
+    lst.show("Depois")
 
 
 if __name__ == "__main__":

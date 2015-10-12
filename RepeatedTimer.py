@@ -1,3 +1,7 @@
+# Codigo retirado do site http://stackoverflow.com/questions/3393612/run-certain-code-every-n-seconds
+# Disponibilizado sem quaisquer restricoes de copia
+
+
 from threading import Timer
 
 class RepeatedTimer(object):

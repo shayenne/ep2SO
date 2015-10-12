@@ -100,6 +100,16 @@ def MMUterminaProcesso(pid):
     # Nao e so isso, tem que reestruturar a fila
     #for i in xrange(processos[pid][1]):
     #    lstfisica.remove([pid, processos[pid][0] + i, 1])
+    curr = lstfisica.head
+    while curr is not None:
+        if curr.data[0] == pid:
+            while curr.data[0] == pid:
+                gerenciador.liberaEspaco(lstfisica, curr)
+                curr = curr.next
+            break
+        curr = curr.next
+
+
     lstfisica.show("Fisica apos remocao do processo")
 
 if __name__ == "__main__":
