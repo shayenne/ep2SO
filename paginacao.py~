@@ -1,0 +1,9 @@
+
+subs = None
+
+def defineSubstituidor(num):
+    global subs
+    subs = num
+
+def substitui(mapa):
+    global subs

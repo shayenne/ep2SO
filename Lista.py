@@ -1,3 +1,7 @@
+# Codigo baseado no codigo que esta disponivel em 
+# http://ls.pwd.io/2014/08/singly-and-doubly-linked-lists-in-python/
+# Distribuido sem quaisquer restricoes de copia
+
 class Node(object):
  
     def __init__(self, data, prev, next):
@@ -13,9 +17,12 @@ class List(object):
 
     def insert(self, data, prev):
         new_node = Node(data, None, None)
-        new_node.next = prev.next
-        prev.next = new_node
-        new_node.prev = prev
+        if prev is not None:
+            new_node.next = prev.next
+            prev.next = new_node
+            new_node.prev = prev
+        else:
+            self.append(data)
  
     def append(self, data):
         new_node = Node(data, None, None)
@@ -35,11 +42,13 @@ class List(object):
                 # if it's not the first element
                 if current_node.prev is not None:
                     current_node.prev.next = current_node.next
-                    current_node.next.prev = current_node.prev
+                    if current_node.next is not None:
+                        current_node.next.prev = current_node.prev
                 else:
                     # otherwise we have no prev (it's None), head is the next one, and prev becomes None
                     self.head = current_node.next
-                    current_node.next.prev = None
+                    if current_node.next is not None:
+                        current_node.next.prev = None
  
             current_node = current_node.next
 

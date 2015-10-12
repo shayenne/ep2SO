@@ -2,6 +2,7 @@
 
 import sys
 import math
+import threading
 from Lista import *
 from MMU import *
 
@@ -11,16 +12,21 @@ lstvirtual = None
 tam = None
 last = None
 vir = None
+quick = None
 #
 
-
+# Inicializa a lista ligada da memoria virtual
 def criaListaVirtual(t):
-    global lstvirtual, last, tam
+    global lstvirtual, last, tam, quick
     lstvirtual = List()
     lstvirtual.append(["L", 0, int(t/tam)])
     last = lstvirtual.head
+    # QuickFit
+    quick = [[]*5]
     
 
+# Define globalmente o gerenciador, o tamanho de pagina e o 
+# tamanho da memoria virtual
 def defineGerenciador(num, t, virtual):
     global ger, vir, tam
     vir = virtual
@@ -33,7 +39,8 @@ def GERimprimeVirtual():
     lstvirtual.show("Status da Memoria Virtual")
 
 
-# Atribui um espaco para um processo que chega, de acordo com o algoritmo escolhido
+# Atribui um espaco para um processo que chega, de acordo com 
+# o algoritmo escolhido
 def gerente(espaco, pid):
     global lstvirtual, tam, vir
 
@@ -52,16 +59,17 @@ def gerente(espaco, pid):
             inicio = NextFit(lstvirtual, pid, paginas)
         elif ger == "3":
             inicio = QuickFit(lstvirtual, pid, paginas)
-    finally:
-        lock.release()
+    #finally:
+    #    lock.release()
     # Ate aqui, o processo pediu um espaco em paginas para algum gerenciador
     # Em 'inicio' esta a posicao inicial do espaco que sera alocado para este processo     
        
     # Passar esta 'inicio' e 'paginas' para a MMU
     # Escreve na memoria virtual todas as posicoes alocadas para o processo o seu pid
-    escreveMemoria(vir, inicio*tam, (inicio+paginas)*tam, pid)
-    MMUalocaEspaco(pid, inicio, paginas)
-    
+        escreveMemoria(vir, inicio*tam, (inicio+paginas)*tam, pid)
+        MMUalocaEspaco(pid, inicio, paginas)
+    finally:
+        lock.release()
         
     
 
@@ -83,13 +91,15 @@ def FirstFit(lista, pid, processo):
             break
         atual = atual.next
     # APAGAR
-    lista.show("Virtual")
+    lista.show("Lista que passou pelo FirstFit")
     #
     if atual is not None:
         return atual.data[1]
 
     return None
 
+# Recebe uma lista ligada, o pid do processo e o tamanho que o processo
+# quer ocupar em paginas
 def NextFit(lista, pid, processo):
     global last
     old = last
@@ -122,57 +132,86 @@ def NextFit(lista, pid, processo):
     return None
     
 
+# Recebe uma lista ligada, o pid do processo e o tamanho que o processo
+# quer ocupar em paginas, guarda os ponteiros de onde estao diferentes tamanhos
+# de espacos livres
+def QuickFit(lista, pid, processo):
+    # Guarda os ponteiros para lugares vazios
+    # de 16, 32, 64, 96 e 128 bytes
+    global quick
+
+    pos = None
+
+    if quick[0] != [] and processo <= 1:
+        #encontra na primeira lista
+        print ""
+    elif quick[1] != [] and processo <= 2:
+        #encontra na segunda lista
+        print ""
+    elif quick[2] != [] and processo <= 4:
+        print ""
+    elif quick[3] != [] and processo <= 6:
+        print ""
+    elif quick[4] != [] and processo <= 8:
+        print ""
+    else:
+        return FirstFit(lista, pid, processo)
         
 
+        
 
-# Este e o BestFit, nao Quick :(
-def BestFit(lista, processo):
-    i = 0
-    menor[0] = sys.maxint 
-    while (i < len(lista)):
-        if lista[i][0] == "L" and lista[i][2] > processo and lista[i][2] < menor[0]:
-            menor[0] = lista[i][2]
-            menor[1] = lista[i][1]
+# Remove o processo pid da memoria virtual
+def GERremoveProcesso(pid):
+    lock1 = threading.RLock()
+    lock1.acquire()
+    try:
+        if ger != "3":
+            curr = lstvirtual.head
+            while curr is not None:
+                if curr.data[0] == pid:
+                    liberaEspaco(lstvirtual, curr)
+                    break
+                curr = curr.next
 
-    if menor[0] != sys.maxint:
-        return menor[1]
+            lstvirtual.show("Lista Virtual apos remocao do processo")
+            print "-- Removi o processo de pid ", pid
+        else:
+            print "Ainda nao fizemos o QuickFit :("
+    finally:
+        lock1.release()
+
+
+# Recebe uma lista ligada e o no que deve remover, faz a compressao de acordo 
+# com os espacos livres adjacentes
+def liberaEspaco(lst, node):
+    if node.prev is not None and node.prev.data[0] == "L" and node.next is not None and node.next.data[0] == "L":
+        local = node.prev
+        new = ["L", node.prev.data[1], node.next.data[2]+node.data[2]+node.prev.data[2]]
+        lst.remove(node.next.data)
+        lst.remove(node.data)
+        local.data = new
+        
     
-    return None
+    elif node.prev is not None and node.prev.data[0] == "L":
+        local = node.prev
+        new = ["L", node.prev.data[1], node.data[2]+node.prev.data[2]]
+        lst.remove(node.data)
+        local.data = new
+        
+        
+        
+    elif node.next is not None and node.next.data[0] == "L":
+        local = node
+        new = ["L", node.data[1], node.next.data[2]+node.data[2]]
+        lst.remove(node.next.data)
+        local.data = new
+        
 
-
-def QuickFit(lista, processo):
-    pos = None
-    # A lista possui tamanhos comuns
-    # e extremos. Em 2, 3, 4, 5, 6 temos os tamanhos: 4k, 8k, 16k, 32k, 64k
-    # Em 0, 1 temos tamanhos: menores que 4k, maiores que 64k e intermediarios
-    # Em 7, temos nodes ocupados por processos
-    if processo < 3:
-        for l in lista[0]:
-            if l[2] > processo:
-                pos = l
-                break
-        #encontra na primeira lista
+    else:
+        node.data[0] = "L"
+        
     
-    elif processo > 64:
-        #encontra na segunda lista
-        for l in lista[1]:
-            if l[2] > processo:
-                pos = l
-                break
-    else:
-        #aloca processo nesta posicao
-        for l in lista[math.log(processo, 2)]:
-            pos = l
-            break
 
-
-    if pos != None:
-        l[0] = processo
-        if l[2] - processo >= 1:
-            encaixaSobra(lista, l[1]+processo, l[2] - processo)
-        encaixaNovo(l[0], l[1], processo)
-    else:
-        return False            
 
 
 if __name__ == "__main__":

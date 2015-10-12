@@ -9,6 +9,7 @@ from RepeatedTimer import *
 from processo import *
 from arquivos import *
 from gerenciador import * 
+from paginacao import *
 from MMU import *
 
 global tampag
@@ -36,6 +37,8 @@ if __name__ == "__main__":
         
         if prompt[0] == "carrega":
             try:
+                # Limpa a lista de processos
+                proc = []
                 arquivo = open(prompt[1], 'r')
 
                 total, virtual = map(int, arquivo.readline().split())
@@ -103,6 +106,8 @@ if __name__ == "__main__":
                 # Junto com o tamanho da pagina
                 defineGerenciador(espaco, tampag, vir)
 
+                defineSubstituidor(substitui)
+
                 # Cria a lista da memoria virtual
                 criaListaVirtual(virtual)
 
@@ -117,10 +122,7 @@ if __name__ == "__main__":
                     threads.append(t)
 
                 rt = RepeatedTimer(intervalo, imprimeEstado, intervalo)
-
-                #t = threading.Thread(target=imprimeEstado, args=(inicio, intervalo))    
-                #t.deamon = True
-                #t.start()
+                rr = RepeatedTimer(2, resetaR)
                 try:
                     # Inicia a execucao de todos os processos
                     for t in threads:
@@ -129,7 +131,9 @@ if __name__ == "__main__":
                     for t in threads:
                         t.join()
                 finally:
+                    rr.stop()
                     rt.stop()
+            
 
         prompt = raw_input("[ep2]: ").split()
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 import time
-from gerenciador import gerente
+from gerenciador import gerente, GERremoveProcesso
 from MMU import MMUacessaPosicao, MMUterminaProcesso
 
 class Processo:
@@ -49,10 +49,12 @@ class Processo:
             self.lePosicao(entry[0])
 
         # Espera chegar o seu fim
-        espera = self.tf - self.t0 -(time.time() - inicio)
+        espera = self.tf - self.t0 - (time.time() - inicio)
         if espera > 0:
             time.sleep(espera)
+
         # Avisa que terminou
+        GERremoveProcesso(self.pid)
         MMUterminaProcesso(self.pid)
         print "O processo {} acabou. :(".format(self.nome)
 
