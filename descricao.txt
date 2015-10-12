@@ -64,9 +64,6 @@ Suposicao geral do EP2
 DUVIDAS
 - Vai ser possivel executar o programa sem escolher o algoritmo de paginacao e dos FITS? Seria bom fazer um default talvez?
 
-
-
-
 ************************
 CONSIDERACOES GERAIS
 - Escrever a implementacao tomada no quick fit!
@@ -85,9 +82,95 @@ CONSIDERACOES GERAIS
  
 
 
+
 *******************************
 Alyssa passou por aqui de novo
 *******************************
 - bit M nao e necessario pois as paginas chamadas nunca serao modificadas.
 
-- lembrando que de tempos em tempos o bit R tera de ser resetado
+- lembrando que de tempos em tempos o bit R tera de ser resetado [LOCK PRIORITARIO]
+
+- Em iniciaContagem:
+  - LOCK na chamada para o gerente (em self.alocaEspaco)
+
+- Em MMUacessaoPosicao
+  - se leuposicao != None:
+    - LOCK ate o fim algoritmo de substituicao de pagina
+
+- Quando um processo terminar: [LOCK]
+  - verificar no mapa base / limite do processo
+  - checar se tem alguma pagina na memoria fisica (bit presente = 1)
+    - se tem, liberar o espaço arrumando a lista de espaco livre fisica (basta somente arrumar a lista)
+  - liberar o espaco da memoria virtual (basta somente arrumar a lista!)
+
+------------------------------------------------------
+    Algoritmos de substituicao de paginas (Rascunho)
+------------------------------------------------------
+1) Cuidado com deadlocks
+
+2) Para aqueles que usam o bit R como parametro, o que acontece se todas as paginas estiverem com R = 1?
+   (Melhor fazer busca 'circular'? -> chegou no fim, comeca de novo)
+   (Isso funciona pq o bit R eh resetado de tempos em tempos)
+
+
+******************* 
+       NRU
+*******************
+- Quando ocorrer Substituicao:
+- Em todo o mapa, checar aqueles que possuem bit presente = 1 (presente)
+- se presente, checar o bit R
+  - se R = 0 (nao utilizada):
+    - copiarPagina(...)
+    - setar bit presente = 1 e bit R = 1 da pagina inserida
+
+
+******************* 
+       FIFO
+*******************
+- Criar Fila FIFO na MMU
+- Em MMUacessaPosicao:
+  - se leuposicao = None (nao esta na memoria fisica) e encontrouespaco != None (tem espaco na mem fisica)
+    - colocar [pid][pageframe] na fila FIFO
+
+- Quando ocorrer Substituicao:
+  - tirar o primeiro da fila FIFO (setar bit presente = 0)
+  - copiarPagina(...)
+  - inserir nova pagina na fila FIFO (setar bit presente = 1 e R = 1)
+
+
+******************* 
+   Second Chance
+*******************
+1) Sera permitido que o S.O resete os bits R's dos processos que estao na fila FIFO
+2) Nao sera permitido que os processos alterem os bits R's que estao na fila FIFO(?)
+
+- Criar Fila FIFO na MMU
+- Em MMUacessaPosicao:
+  - se leuposicao = None e encontrouespaco != None
+    - colocar [pid][pageframe][R?] na fila FIFO
+
+- Quando ocorrer Substituicao:
+  - para o primeiro da fila, checar se o bit R = 1
+    - se R = 1:
+      - setar R = 0 e colocar no final da fila
+    - se R = 0:
+    - tirar o primeiro da fila FIFO (setar bit presente = 0)
+    - copiarPagina(...)
+    - inserir nova pagina na fila FIFO (setar bit presente = 1 e R = 1)
+
+
+******************* 
+       LRUP
+*******************
+1) Modificar o mapa para ter +1 slot (contador)
+2) Em MMUacessaPosicao
+   * se leuposicao != None (Pagina presente -> Referenciacao):
+       incrementar contador da pagina referenciada
+   * se encontrou != None (Tem espaco na memoria fisica e estou colocando a pagina -> Referenciacao)
+       incrementar contador da pagina referenciada
+
+- Em todo o mapa, para todos os que possuem bit presente = 1 (e bit R = 0?), encontrar aquele que possui o menor valor no contador
+- copiaPagina(...)
+- incrementar o contador do processo inserido
+- setar bit R = 1 ....
+
