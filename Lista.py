@@ -42,7 +42,8 @@ class List(object):
                 # if it's not the first element
                 if current_node.prev is not None:
                     current_node.prev.next = current_node.next
-                    current_node.next.prev = current_node.prev
+                    if current_node.next is not None:
+                        current_node.next.prev = current_node.prev
                 else:
                     # otherwise we have no prev (it's None), head is the next one, and prev becomes None
                     self.head = current_node.next

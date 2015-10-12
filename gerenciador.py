@@ -2,6 +2,7 @@
 
 import sys
 import math
+import threading
 from Lista import *
 from MMU import *
 
@@ -58,16 +59,17 @@ def gerente(espaco, pid):
             inicio = NextFit(lstvirtual, pid, paginas)
         elif ger == "3":
             inicio = QuickFit(lstvirtual, pid, paginas)
-    finally:
-        lock.release()
+    #finally:
+    #    lock.release()
     # Ate aqui, o processo pediu um espaco em paginas para algum gerenciador
     # Em 'inicio' esta a posicao inicial do espaco que sera alocado para este processo     
        
     # Passar esta 'inicio' e 'paginas' para a MMU
     # Escreve na memoria virtual todas as posicoes alocadas para o processo o seu pid
-    escreveMemoria(vir, inicio*tam, (inicio+paginas)*tam, pid)
-    MMUalocaEspaco(pid, inicio, paginas)
-    
+        escreveMemoria(vir, inicio*tam, (inicio+paginas)*tam, pid)
+        MMUalocaEspaco(pid, inicio, paginas)
+    finally:
+        lock.release()
         
     
 
@@ -89,7 +91,7 @@ def FirstFit(lista, pid, processo):
             break
         atual = atual.next
     # APAGAR
-    lista.show("Virtual")
+    lista.show("Lista que passou pelo FirstFit")
     #
     if atual is not None:
         return atual.data[1]
@@ -160,45 +162,49 @@ def QuickFit(lista, pid, processo):
 
 # Remove o processo pid da memoria virtual
 def GERremoveProcesso(pid):
-    if ger != "3":
-        curr = lstvirtual.head
-        while curr is not None:
-            if curr.data[0] == pid:
-                liberaEspaco(lstvirtual, curr)
-                break
-        lstvirtual.show("Lista Virtual apos remocao do processo")
-        print "-- Removi o processo de pid ", pid
-    else:
-        print "Ainda nao fizemos o QuickFit :("
+    lock1 = threading.RLock()
+    lock1.acquire()
+    try:
+        if ger != "3":
+            curr = lstvirtual.head
+            while curr is not None:
+                if curr.data[0] == pid:
+                    liberaEspaco(lstvirtual, curr)
+                    break
+                curr = curr.next
 
+            lstvirtual.show("Lista Virtual apos remocao do processo")
+            print "-- Removi o processo de pid ", pid
+        else:
+            print "Ainda nao fizemos o QuickFit :("
+    finally:
+        lock1.release()
 
 
 # Recebe uma lista ligada e o no que deve remover, faz a compressao de acordo 
 # com os espacos livres adjacentes
 def liberaEspaco(lst, node):
     if node.prev is not None and node.prev.data[0] == "L" and node.next is not None and node.next.data[0] == "L":
-        local = node.prev.prev
+        local = node.prev
         new = ["L", node.prev.data[1], node.next.data[2]+node.data[2]+node.prev.data[2]]
-        lst.remove(node.prev.data)
-        lst.remove(node.data)
         lst.remove(node.next.data)
-        lst.insert(new, local)
+        lst.remove(node.data)
+        local.data = new
         
     
     elif node.prev is not None and node.prev.data[0] == "L":
-        local = node.prev.prev
+        local = node.prev
         new = ["L", node.prev.data[1], node.data[2]+node.prev.data[2]]
-        lst.remove(node.prev.data)
         lst.remove(node.data)
-        lst.insert(new, local)
+        local.data = new
+        
         
         
     elif node.next is not None and node.next.data[0] == "L":
-        local = node.prev
+        local = node
         new = ["L", node.data[1], node.next.data[2]+node.data[2]]
-        lst.remove(node.data)
         lst.remove(node.next.data)
-        lst.insert(new, local)
+        local.data = new
         
 
     else:
