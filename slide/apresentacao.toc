@@ -1,15 +1,15 @@
-\beamer@endinputifotherversion {3.10pt}
+\beamer@endinputifotherversion {3.33pt}
 \select@language {portuguese}
-\beamer@sectionintoc {1}{Objetivo}{3}{0}{1}
-\beamer@sectionintoc {2}{Shell}{5}{0}{2}
-\beamer@sectionintoc {3}{Vis\IeC {\~a}o Geral}{6}{0}{3}
-\beamer@sectionintoc {4}{Gerenciador de Espa\IeC {\c c}o Livre}{9}{0}{4}
-\beamer@subsectionintoc {4}{1}{First Fit}{9}{0}{4}
-\beamer@subsectionintoc {4}{2}{Next Fit}{10}{0}{4}
-\beamer@subsectionintoc {4}{3}{Quick Fit}{12}{0}{4}
-\beamer@sectionintoc {5}{Substitui\IeC {\c c}ao de Pagina}{13}{0}{5}
-\beamer@subsectionintoc {5}{1}{NRUP}{13}{0}{5}
-\beamer@subsectionintoc {5}{2}{FIFO}{14}{0}{5}
-\beamer@subsectionintoc {5}{3}{Second Chance}{15}{0}{5}
-\beamer@subsectionintoc {5}{4}{LRUP}{16}{0}{5}
-\beamer@sectionintoc {6}{Resultados}{17}{0}{6}
+\beamer@sectionintoc {1}{Introdu\IeC {\c c}\IeC {\~a}o}{3}{0}{1}
+\beamer@sectionintoc {2}{Intera\IeC {\c c}\IeC {\~a}o com usu\IeC {\'a}rio}{5}{0}{2}
+\beamer@sectionintoc {3}{Vis\IeC {\~a}o Geral}{8}{0}{3}
+\beamer@sectionintoc {4}{Gerenciador de Espa\IeC {\c c}o Livre}{12}{0}{4}
+\beamer@subsectionintoc {4}{1}{First Fit}{15}{0}{4}
+\beamer@subsectionintoc {4}{2}{Next Fit}{16}{0}{4}
+\beamer@subsectionintoc {4}{3}{Quick Fit}{17}{0}{4}
+\beamer@sectionintoc {5}{Substitui\IeC {\c c}\IeC {\~a}o de P\IeC {\'a}gina}{18}{0}{5}
+\beamer@subsectionintoc {5}{1}{NRUP}{23}{0}{5}
+\beamer@subsectionintoc {5}{2}{FIFO}{24}{0}{5}
+\beamer@subsectionintoc {5}{3}{Second Chance}{25}{0}{5}
+\beamer@subsectionintoc {5}{4}{LRUP}{27}{0}{5}
+\beamer@sectionintoc {6}{Resultados}{28}{0}{6}
