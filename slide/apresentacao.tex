@@ -107,18 +107,6 @@ Sistemas Operacionais
 \end{frame}
 
 %----------------------------------------------------------------------------------------
-\begin{frame}
-\frametitle{Sumário}
-
-\end{frame}
-
-
-%\begin{frame}
-%\frametitle{Visão Geral} % Table of contents slide, comment this block out to remove it
-%\tableofcontents % Throughout your presentation, if you choose to use \section{} and \subsection{} commands, these will automatically be printed on this slide as an overview of your presentation
-%\end{frame}
-
-%----------------------------------------------------------------------------------------
 %	PRESENTATION SLIDES
 %----------------------------------------------------------------------------------------
 
@@ -162,8 +150,7 @@ Interação com usuário
 
 %------------------------------------------------
 \begin{frame}
-\frametitle{Shell}
-
+\frametitle{Interação com simulador}
 5 comandos: carrega, espaço, substitui, executa e sai
 \begin{itemize}
 \item carrega [trace] 
@@ -181,9 +168,9 @@ Interação com usuário
 
 %------------------------------------------------
 \begin{frame}
-\frametitle{Shell}
-\begin{itemize}
 
+\begin{itemize}
+\frametitle{Interação com simulador}
 \item executa [intervalo]
 
   Cria listas de espaço livre e os arquivos ep2.mem e ep2.vir preenchidos com '-1'
@@ -224,7 +211,6 @@ Visão Geral
 
 \item Dormem até t0
 
-\item Em t0: alocação de espaço na memória virtual
 \end{itemize}
 \justifying
 \end{frame}
@@ -367,15 +353,6 @@ Substituição de Página
 %------------------------------------------------
 \begin{frame}
 \frametitle{MMU}
-IMAGEM MAPEAMENTO MMU
-\justifying
-\end{frame}
-
-
-
-%------------------------------------------------
-\begin{frame}
-\frametitle{MMU}
 Como funciona?
 \begin{enumerate}
 
@@ -397,10 +374,20 @@ Como funciona?
 
 
 %------------------------------------------------
+%\begin{frame}
+%\frametitle{MMU}
+%IMAGEM MAPEAMENTO MMU
+%\justifying
+%\end{frame}
+
+
+%------------------------------------------------
 \begin{frame}
 \frametitle{MMU}
 \begin{itemize}
 \item Função que reseta o bit R do mapa a cada k segundos [Lock prioritário]
+
+\item Bit M desconsiderado
 \end{itemize}
 
 \justifying
@@ -417,7 +404,7 @@ Como funciona?
 
 \item Dentre as páginas presentes na memória física, checa qual deles possui R = 0
 
-\item Caso todos os bits R’s = 1, espera a função resetar os bits R’s
+\item Caso todos os bits R’s = 1, espera resetar os bits R’s
 \end{itemize}
 \justifying
 \end{frame}
@@ -497,7 +484,15 @@ Resultados
 \end{frame}
 
 
+\begin{frame}
+\frametitle{Gerenciamento de Espaço Livre} 
+\justifying
+\end{frame}
 
+\begin{frame}
+\frametitle{Substituição de Páginas} 
+\justifying
+\end{frame}
 
 \begin{frame}
 \frametitle{First Fit} 
