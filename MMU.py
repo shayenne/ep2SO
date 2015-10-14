@@ -17,7 +17,6 @@ vir = None
 mem = None
 lstfisica = None
 fila = None
-
 lockmapa = None
 
 # Recebe o tamanho da memoria virtual (em bytes), o tamanho da pagina (em bytes)
@@ -57,9 +56,22 @@ def releaseLock():
     global lockmapa
     lockmapa.release()
 
+def MMUatualizaContador():
+    global lockmapa, fila
+    
+    lockmapa.acquire()
+
+    p = fila.head
+    while p is not None:
+        p.data[3] += p.data[2]
+        p = p.next
+    #fila.show("atualizaContador")
+    lockmapa.release()
+    
+    
 # Acessa uma posicao de um processo, transformando o endereco virtual em fisico
 def MMUacessaPosicao(pid, pos):
-    global processos, tam
+    global processos, tam, lockmapa, fila
 
     lock3 = threading.Lock()
     lock3.acquire()
@@ -106,7 +118,7 @@ def MMUacessaPosicao(pid, pos):
                 
                 lockmapa.acquire()
                 # Insere o processo na fila de frames
-                fila.append([pid, encontrouEspaco, 1, 1])
+                fila.append([pid, encontrouEspaco, 1, 0])
                 # Seta o bit para Presente
                 mapa[base+local][0] = 1
                 # Coloca o page frame em que esta o pagina
@@ -142,7 +154,7 @@ def MMUacessaPosicao(pid, pos):
                         fila.remove(p.data)
                         # Insere o novo processo na fila de frames
                         fila.show("FILA DURANTE")
-                        fila.append([pid, frame, 1, 1])
+                        fila.append([pid, frame, 1, 0])
                         fila.show("FILA DEPOIS")
                         break
                     p = p.next

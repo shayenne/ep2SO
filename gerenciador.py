@@ -22,7 +22,7 @@ def criaListaVirtual(t):
     lstvirtual.append(["L", 0, int(t/tam)])
     last = lstvirtual.head
     # QuickFit
-    quick = [[]*5]
+    quick = [[] for i in range(5)]
     
 
 # Define globalmente o gerenciador, o tamanho de pagina e o 
@@ -59,6 +59,8 @@ def gerente(espaco, pid):
             inicio = NextFit(lstvirtual, pid, paginas)
         elif ger == "3":
             inicio = QuickFit(lstvirtual, pid, paginas)
+            
+            print "Devolvi no quick ", inicio
     #finally:
     #    lock.release()
     # Ate aqui, o processo pediu um espaco em paginas para algum gerenciador
@@ -66,6 +68,7 @@ def gerente(espaco, pid):
        
     # Passar esta 'inicio' e 'paginas' para a MMU
     # Escreve na memoria virtual todas as posicoes alocadas para o processo o seu pid
+        print "TUDO QUE USO", inicio, tam, paginas
         escreveMemoria(vir, inicio*tam, (inicio+paginas)*tam, pid)
         MMUalocaEspaco(pid, inicio, paginas)
     finally:
@@ -136,23 +139,51 @@ def NextFit(lista, pid, processo):
 # quer ocupar em paginas, guarda os ponteiros de onde estao diferentes tamanhos
 # de espacos livres
 def QuickFit(lista, pid, processo):
-    # Guarda os ponteiros para lugares vazios
-    # de 16, 32, 64, 96 e 128 bytes
     global quick
-
+    # Guarda os ponteiros para lugares vazios
+    # de 16, 32, 64, 128 e 256 bytes
+    p = lista.head
+    while p is not None:
+        if p.data[0] == "L":
+            for i in xrange(5):
+                if p.data[2] == math.pow(2, i):
+                    print "Inseri ", p.data, "no quick ",i 
+                    quick[i].append(p)
+                    break
+        p = p.next
+    
+    lstvirtual.show("Organizei com o Quick")
     pos = None
 
-    if quick[0] != [] and processo <= 1:
+    if quick[0] != [] and processo == 1:
+        for i in quick[0]:
+            print "q0: ", i.data,
+        print ""
+
         #encontra na primeira lista
-        print ""
+        pos = quick[0].pop()
+        #x = int(pos.data[1])
+        #print "Q1Essa ea a posicao ", pos.data[1], x
+        return pos.data[1]
+    
     elif quick[1] != [] and processo <= 2:
-        #encontra na segunda lista
-        print ""
+        if processo != 2:
+            pos = quick[1].pop()
+            pos.data[2] = 1
+            lista.insert(["L", pos.data[1]+1, 1], pos)
+            #quick[0].append(pos)
+            #quick[0].append(pos.next)
+            return QuickFit(lista, pid, processo)
+        else:
+            pos = quick[1].pop()
+            print "Q2Essa ea a posicao ", pos.data[1] 
+            return pos.data[1]
+            
     elif quick[2] != [] and processo <= 4:
         print ""
-    elif quick[3] != [] and processo <= 6:
+    elif quick[3] != [] and processo <= 8:
         print ""
-    elif quick[4] != [] and processo <= 8:
+    elif quick[4] != [] and processo <= 16:
         print ""
     else:
         return FirstFit(lista, pid, processo)

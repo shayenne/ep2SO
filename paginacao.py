@@ -54,4 +54,13 @@ def SC(lista):
 
 
 def LRU(lista):
-    
+    p = lista.head
+    menor = p.data[3]
+    frame = p.data[1]
+    while p is not None:
+        if p.data[3] < menor:
+            menor = p.data[3]
+            frame = p.data[1]
+        p = p.next
+
+    return frame
