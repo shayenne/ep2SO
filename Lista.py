@@ -8,12 +8,25 @@ class Node(object):
         self.data = data
         self.prev = prev
         self.next = next
- 
+        
  
 class List(object):
  
     head = None
     tail = None
+    current = None
+    
+
+    def __iter__(self):
+        self.current = self.head
+        return self
+
+    def next(self):
+        if self.current == None:
+            raise StopIteration
+        else:
+            self.current = self.current.next
+            return self.current.prev
 
     def insert(self, data, prev):
         new_node = Node(data, None, None)
@@ -44,6 +57,8 @@ class List(object):
                     current_node.prev.next = current_node.next
                     if current_node.next is not None:
                         current_node.next.prev = current_node.prev
+                    else:
+                        self.tail = current_node.prev
                 else:
                     # otherwise we have no prev (it's None), head is the next one, and prev becomes None
                     self.head = current_node.next

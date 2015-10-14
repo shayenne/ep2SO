@@ -44,6 +44,19 @@ def MMUcriaMapa(tmem, tvir, pagina, virtual, fisica):
 def MMUimprimeFisica():
     lstfisica.show("Status da Memoria Fisica")
 
+def initLock():
+    global lockmapa
+    lockmapa = threading.Lock()
+
+    
+def acquireLock():
+    global lockmapa
+    lockmapa.acquire()
+
+def releaseLock():
+    global lockmapa
+    lockmapa.release()
+
 # Acessa uma posicao de um processo, transformando o endereco virtual em fisico
 def MMUacessaPosicao(pid, pos):
     global processos, tam
@@ -61,10 +74,24 @@ def MMUacessaPosicao(pid, pos):
         if leuPosicao is not None:
             print "Li a posicao ", leuPosicao, "da memoria fisica"
             leMemoria(mem, leuPosicao)
+
+            lockmapa.acquire()
+            # Procura na lista de frames e seta o bit R
+            p = fila.head
+            while p is not None:
+                if p.data[1] == mapa[base+local][1]:
+                    p.data[2] = 1
+                    break
+                p = p.next
+            
             # Seta o bit R (Request/Read)
             mapa[base+local][2] = 1
+            
+            
             # Atualiza o contador
             mapa[base+local][3] += 1
+
+            lockmapa.release()
         else:
             encontrouEspaco = gerenciador.FirstFit(lstfisica, pid, 1)
             
@@ -74,10 +101,13 @@ def MMUacessaPosicao(pid, pos):
             
 
             if encontrouEspaco is not None:
-                fila.append([pid, encontrouEspaco])
+                
                 copiaPagina(vir,(base+local)*tam, mem, encontrouEspaco*tam, tam)
-                # Seta o bit para Presente
+                
                 lockmapa.acquire()
+                # Insere o processo na fila de frames
+                fila.append([pid, encontrouEspaco, 1, 1])
+                # Seta o bit para Presente
                 mapa[base+local][0] = 1
                 # Coloca o page frame em que esta o pagina
                 mapa[base+local][1] = encontrouEspaco
@@ -91,17 +121,67 @@ def MMUacessaPosicao(pid, pos):
                 print "Copiei da memoria virtual para a fisica"
                 # Chama o algoritmo de substituicao
             else:
-                frame = paginacao.substitui(mapa)
+                print "VOU TER QUE SUBSTITUIR "
+                frame = paginacao.substitui(fila)
+                print "Vou trocar o frame ", frame
+                
                 copiaPagina(vir, (base+local)*tam, mem, frame*tam, tam)
+
+                lockmapa.acquire()
+                # Remove o processo que estava na fila de frames
+                
+                rmpid = None
+                p = fila.head
+                while p is not None:
+                    if p.data[1] == frame:
+                        rmpid = p.data[0]
+                        print "Inseri o frame ", frame
+                        
+                        fila.show("FILA ANTES")
+                        print "Removi o frame ", frame
+                        fila.remove(p.data)
+                        # Insere o novo processo na fila de frames
+                        fila.show("FILA DURANTE")
+                        fila.append([pid, frame, 1, 1])
+                        fila.show("FILA DEPOIS")
+                        break
+                    p = p.next
+
+                f = lstfisica.head
+                while f is not None:
+                    if f.data[1] == frame:
+                        f.data[0] = pid
+                        break
+                    f = f.next
+                
+                print "Esse e o rmpid ", rmpid
+                # Define o bit para Ausente
+                for i in xrange(processos[rmpid][1]):
+                    #print i, processos[rmpid][0]
+                    if mapa[processos[rmpid][0]+i][1] == frame:
+                        mapa[processos[rmpid][0]+i][0] = 0
+                        break
+
+               
+                # Seta o bit para Presente
+                mapa[base+local][0] = 1
+                # Coloca o page frame em que esta o pagina
+                mapa[base+local][1] = frame
+                # Seta o bit R (Request/Read)
+                mapa[base+local][2] = 1
+                # Atualiza o contador
+                mapa[base+local][3] += 1
+                lockmapa.release()
+                MMUimprimeFisica()
             MMUacessaPosicao(pid, pos)
             
     finally:
         lock3.release()
     
 # Guarda num dicionario o processo associado a sua base e limite (em paginas)
-def MMUalocaEspaco(pid, inicio, paginas):
+def MMUalocaEspaco(pid, base, paginas):
     global processos
-    processos[pid] = [inicio, paginas]
+    processos[pid] = [base, paginas]
     
 
 # Recebe a base (em paginas) e uma posicao (em bytes) e mapeia para um endereco da memoria fisica (em bytes)
@@ -119,9 +199,7 @@ def MMUtraduzEndereco(base, pos):
     
 
 def MMUterminaProcesso(pid):
-    # Nao e so isso, tem que reestruturar a fila
-    #for i in xrange(processos[pid][1]):
-    #    lstfisica.remove([pid, processos[pid][0] + i, 1])
+    
     lock2 = threading.RLock()
     lock2.acquire()
     try:
@@ -144,10 +222,22 @@ def MMUterminaProcesso(pid):
     finally:
         lock2.release()
 
+# A cada intervalo de tempo (definido no ep2.py) reseta os bits R de todos os
+# processos que estao mapeados na memoria fisica
 def resetaR():
-    global mapa
-    print "Estou resetando os R :D"
+    global mapa, fila
+   
     lockmapa.acquire()
+    p = fila.head
+    while p is not None:    
+        p.data[2] = 0
+        p = p.next
+    print "+++ RESETEI +++"
+    #for p in fila:
+    #    print "PROCESSO: ",p
+    #    p.data[2] = 0
+
+        
     for i in xrange(len(mapa)):
         mapa[i][2] = 0
     print mapa

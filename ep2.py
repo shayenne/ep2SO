@@ -15,7 +15,7 @@ from MMU import *
 global tampag
 
 def imprimeEstado(intervalo):
-    print "Esperei ", intervalo, "segundos :P"
+    #print "Esperei ", intervalo, "segundos :P"
     MMUimprimeFisica()
     GERimprimeVirtual()
 
@@ -84,7 +84,7 @@ if __name__ == "__main__":
         if prompt[0] == "executa":
             # APAGAR
             espaco = "1"
-            substitui = "1"
+            #substitui = "1"
             #
             try:
                 intervalo = int(prompt[1])
@@ -122,7 +122,7 @@ if __name__ == "__main__":
                     threads.append(t)
 
                 rt = RepeatedTimer(intervalo, imprimeEstado, intervalo)
-                rr = RepeatedTimer(2, resetaR)
+                rr = RepeatedTimer(4, resetaR)
                 try:
                     # Inicia a execucao de todos os processos
                     for t in threads:
