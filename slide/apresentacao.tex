@@ -264,7 +264,7 @@ Gerenciamento de Espaço Livre
 
 \item Base e o limite de cada processo fica registrado em um dicionário (orientação MMU) 
 
-\item Dicionário: [ pid ][ base ][ limite ]
+\item Dicionário: [ pid ][ base ][ páginas ]
 \end{itemize}
 \end{frame}
 
@@ -356,7 +356,7 @@ Substituição de Página
 
 \item Base dos processos obtidos a partir de um dicionário: 
 
-[ pid ][ base ][ limite ]
+[ pid ][ base ][ páginas ]
 
 \item Mapa MMU: 
  
@@ -525,6 +525,16 @@ Resultados
 %------------------------------------------------
 \begin{frame}
 \frametitle{Substituição de Páginas} 
+
+Exemplo de um modelo ótimo
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.4]{ressubs1.png}
+\end{figure}
+
+Total de 16 page fault
+
 \justifying
 \end{frame}
 
