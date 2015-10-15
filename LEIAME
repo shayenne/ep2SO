@@ -35,5 +35,5 @@ Os argumentos entre <> sao obrigatorios e seguem as seguintes especificacoes:
    Imprime o estado da memoria de <intevalo> em intervalo
 
    sai:
-   Finaliza o ep2
+   Termina execucao do ep2
 
