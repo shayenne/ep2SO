@@ -22,6 +22,8 @@ def substitui(lista):
 
     return frame
 
+
+
 def NRU(lista):
     while True:
         proc = lista.head

@@ -18,6 +18,18 @@ mem = None
 lstfisica = None
 fila = None
 lockmapa = None
+contador = None
+
+
+# TESTES
+def initContador():
+    global contador
+    contador = 0
+
+def imprimeContador():
+    global contador
+    print "Houveram ", contador, " Page Faults"
+
 
 # Recebe o tamanho da memoria virtual (em bytes), o tamanho da pagina (em bytes)
 # os nomes dos arquivos de memoria fisica e virtual
@@ -28,7 +40,7 @@ lockmapa = None
 #    0           1        2        3
 #|  P/A  |  PageFrame  |  R  |  Counter  |
 def MMUcriaMapa(tmem, tvir, pagina, virtual, fisica):
-    global mapa, tam, vir, mem, lstfisica, fila, lockmapa
+    global mapa, tam, vir, mem, lstfisica, fila, lockmapa, contador
     lockmapa = threading.Lock()
     vir = virtual
     mem = fisica
@@ -37,12 +49,15 @@ def MMUcriaMapa(tmem, tvir, pagina, virtual, fisica):
     lstfisica = List()
     lstfisica.append(["L", 0, int(tmem/tam)])
     mapa = [[0 for x in range(4)] for x in range(tvir/pagina)]
-
+    # Testes
+    contador = 0
+    #
 
 # Imprime o estado da lista de memoria Fisica
 def MMUimprimeFisica():
     lstfisica.show("Status da Memoria Fisica")
 
+# Inicializa o semaforo, quando necessario
 def initLock():
     global lockmapa
     lockmapa = threading.Lock()
@@ -65,13 +80,13 @@ def MMUatualizaContador():
     while p is not None:
         p.data[3] += p.data[2]
         p = p.next
-    #fila.show("atualizaContador")
+
     lockmapa.release()
     
     
 # Acessa uma posicao de um processo, transformando o endereco virtual em fisico
 def MMUacessaPosicao(pid, pos):
-    global processos, tam, lockmapa, fila
+    global processos, tam, lockmapa, fila, contador
 
     lock3 = threading.Lock()
     lock3.acquire()
@@ -108,7 +123,7 @@ def MMUacessaPosicao(pid, pos):
             encontrouEspaco = gerenciador.FirstFit(lstfisica, pid, 1)
             
             ##
-            lstfisica.show("Fisica")
+            #lstfisica.show("Fisica")
             ##
             
 
@@ -128,34 +143,36 @@ def MMUacessaPosicao(pid, pos):
                 # Atualiza o contador
                 mapa[base+local][3] += 1
                 lockmapa.release()
-                print mapa
+                #print mapa
  
-                print "Copiei da memoria virtual para a fisica"
+                #print "Copiei da memoria virtual para a fisica"
                 # Chama o algoritmo de substituicao
             else:
-                print "VOU TER QUE SUBSTITUIR "
+                #print "VOU TER QUE SUBSTITUIR "
+                # Encontra o frame que deve ser substituido
                 frame = paginacao.substitui(fila)
-                print "Vou trocar o frame ", frame
+                #print "Vou trocar o frame ", frame
                 
                 copiaPagina(vir, (base+local)*tam, mem, frame*tam, tam)
 
                 lockmapa.acquire()
                 # Remove o processo que estava na fila de frames
-                
+                # TESTE#
+                contador += 1
                 rmpid = None
                 p = fila.head
                 while p is not None:
                     if p.data[1] == frame:
                         rmpid = p.data[0]
-                        print "Inseri o frame ", frame
+                        #print "Inseri o frame ", frame
                         
-                        fila.show("FILA ANTES")
-                        print "Removi o frame ", frame
+                        #fila.show("FILA ANTES")
+                        #print "Removi o frame ", frame
                         fila.remove(p.data)
                         # Insere o novo processo na fila de frames
-                        fila.show("FILA DURANTE")
+                        #fila.show("FILA DURANTE")
                         fila.append([pid, frame, 1, 0])
-                        fila.show("FILA DEPOIS")
+                        #fila.show("FILA DEPOIS")
                         break
                     p = p.next
 
@@ -166,7 +183,7 @@ def MMUacessaPosicao(pid, pos):
                         break
                     f = f.next
                 
-                print "Esse e o rmpid ", rmpid
+                #print "Esse e o rmpid ", rmpid
                 # Define o bit para Ausente
                 for i in xrange(processos[rmpid][1]):
                     #print i, processos[rmpid][0]
@@ -184,7 +201,7 @@ def MMUacessaPosicao(pid, pos):
                 # Atualiza o contador
                 mapa[base+local][3] += 1
                 lockmapa.release()
-                MMUimprimeFisica()
+                #MMUimprimeFisica()
             MMUacessaPosicao(pid, pos)
             
     finally:
@@ -202,17 +219,15 @@ def MMUtraduzEndereco(base, pos):
 
     # Verificar se a pagina esta mapeada na memoria fisica
     if mapa[base + local][0] == 1:
-        print "Encontrei a pagina na memoria fisica"
         return mapa[base+local][1]*tam + pos % tam
     else:        
-        print "Nao encontrei a pagina na memoria fisica"
         return None
 
     
 
 def MMUterminaProcesso(pid):
     
-    lock2 = threading.RLock()
+    lock2 = threading.Lock()
     lock2.acquire()
     try:
         curr = lstfisica.head
@@ -228,8 +243,9 @@ def MMUterminaProcesso(pid):
         for i in xrange(paginas):
             mapa[base+i] = [0 for x in range(4)]
 
-  
-        lstfisica.show("Fisica apos remocao do processo")
+
+        del processos[pid]
+        #lstfisica.show("Fisica apos remocao do processo")
 
     finally:
         lock2.release()
@@ -244,15 +260,10 @@ def resetaR():
     while p is not None:    
         p.data[2] = 0
         p = p.next
-    print "+++ RESETEI +++"
-    #for p in fila:
-    #    print "PROCESSO: ",p
-    #    p.data[2] = 0
-
         
     for i in xrange(len(mapa)):
         mapa[i][2] = 0
-    print mapa
+    
     lockmapa.release()
 
 

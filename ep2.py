@@ -82,10 +82,7 @@ if __name__ == "__main__":
            
                     
         if prompt[0] == "executa":
-            # APAGAR
-            #espaco = "3"
-            substitui = "1"
-            #
+
             try:
                 intervalo = int(prompt[1])
             except IndexError:
@@ -121,6 +118,7 @@ if __name__ == "__main__":
                     t = threading.Thread(target=p.iniciaContagem, args=(inicio, ))
                     threads.append(t)
 
+                
                 # Impressao dos estados das memorias
                 rt = RepeatedTimer(intervalo, imprimeEstado, intervalo)
                 # Reseta o bit R dos processos
@@ -134,7 +132,10 @@ if __name__ == "__main__":
                     # Espera a finalizacao de todos os processos
                     for t in threads:
                         t.join()
+                    
                 finally:
+                    imprimeContador()
+                    imprimeComparacoes()
                     rr.stop()
                     rt.stop()
                     rc.stop()

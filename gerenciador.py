@@ -13,18 +13,23 @@ tam = None
 last = None
 vir = None
 quick = None
+comparacoes = None
 #
+
+def imprimeComparacoes():
+    global comparacoes
+    print "O numero de comparacoes foi ", comparacoes
 
 # Inicializa a lista ligada da memoria virtual
 def criaListaVirtual(t):
-    global lstvirtual, last, tam, quick
+    global lstvirtual, last, tam, quick, comparacoes
     lstvirtual = List()
     lstvirtual.append(["L", 0, int(t/tam)])
     last = lstvirtual.head
     # QuickFit
     quick = [[] for i in range(5)]
     initLock()
-    
+    comparacoes = 0
 
 # Define globalmente o gerenciador, o tamanho de pagina e o 
 # tamanho da memoria virtual
@@ -51,26 +56,20 @@ def gerente(espaco, pid):
     try:
         inicio = None
         paginas = int(espaco / tam)
+
         if espaco % tam != 0:
             paginas += 1 
+
         if ger == "1":
             inicio = FirstFit(lstvirtual, pid, paginas)
-            print "O processo de pid ", pid," ganhou ", paginas, "paginas e inicia em ", inicio
+
         elif ger == "2":
-            lstvirtual.show("Antes do NextFit ")
             inicio = NextFit(lstvirtual, pid, paginas)
+
         elif ger == "3":
             inicio = QuickFit(lstvirtual, pid, paginas)
             
-            print "Devolvi no quick ", inicio
-    #finally:
-    #    lock.release()
-    # Ate aqui, o processo pediu um espaco em paginas para algum gerenciador
-    # Em 'inicio' esta a posicao inicial do espaco que sera alocado para este processo     
-       
-    # Passar esta 'inicio' e 'paginas' para a MMU
-    # Escreve na memoria virtual todas as posicoes alocadas para o processo o seu pid
-        print "TUDO QUE USO", inicio, tam, paginas
+
         escreveMemoria(vir, inicio*tam, (inicio+paginas)*tam, pid)
         MMUalocaEspaco(pid, inicio, paginas)
     finally:
@@ -82,8 +81,11 @@ def gerente(espaco, pid):
 # Recebe uma lista ligada, o pid do processo e o tamanho que o processo
 # quer ocupar em paginas
 def FirstFit(lista, pid, processo):
+    # TESTE#
+    global comparacoes
     atual = lista.head
     while atual is not None:
+        comparacoes += 1
         if atual.data[0] == "L" and atual.data[2] >= processo:
             pos = atual.data[1]
 
@@ -96,7 +98,7 @@ def FirstFit(lista, pid, processo):
             break
         atual = atual.next
     # APAGAR
-    lista.show("Lista que passou pelo FirstFit")
+    #lista.show("Lista que passou pelo FirstFit")
     #
     if atual is not None:
         return atual.data[1]
@@ -106,11 +108,12 @@ def FirstFit(lista, pid, processo):
 # Recebe uma lista ligada, o pid do processo e o tamanho que o processo
 # quer ocupar em paginas
 def NextFit(lista, pid, processo):
-    global last
-    print " O last neste momento e ", last.data
+    global last, comparacoes #TESTES#
+
     old = last
     atual = last
     while atual is not None:
+        comparacoes += 1
         if atual.data[0] == "L" and atual.data[2] >= processo:
             pos = atual.data[1]
 
@@ -130,7 +133,7 @@ def NextFit(lista, pid, processo):
         
         atual = atual.next
     # APAGAR
-    lista.show("Virtual")
+    #lista.show("Virtual")
     #
     if atual is not None:
         return atual.data[1]
@@ -142,7 +145,7 @@ def NextFit(lista, pid, processo):
 # quer ocupar em paginas, guarda os ponteiros de onde estao diferentes tamanhos
 # de espacos livres
 def QuickFit(lista, pid, processo):
-    global quick
+    global quick, comparacoes
     # Guarda os ponteiros para lugares vazios
     # de 16, 32, 64, 128 e 256 bytes
 
@@ -150,7 +153,7 @@ def QuickFit(lista, pid, processo):
     # Reorganizacao da lista apos remocao de processo
     paginas = 0
     if processo == 0:
-        print ">>>>>>Essa e a base ", pid
+        
         p = lista.head
         while p is None:
             # Qual e o node que contem o novo espaco livre
@@ -178,27 +181,26 @@ def QuickFit(lista, pid, processo):
             for i in xrange(5):
                 if p.data[2] == math.pow(2, i):
                     if p not in quick[i]:
-                        print "Inseri ", p.data, "no quick ",i 
                         quick[i].append(p)
                     break
         p = p.next
     
-    lstvirtual.show("Organizei com o Quick")
+    
     pos = None
-
+    
     if quick[0] != [] and processo == 1:
+        comparacoes += 1
         for i in quick[0]:
             print "q0: ", i.data,
         print ""
 
         #encontra na primeira lista
         pos = quick[0].pop(0)
-        #x = int(pos.data[1])
-        #print "Q1Essa ea a posicao ", pos.data[1], x
         pos.data[0] = pid
         return pos.data[1]
     
     elif quick[1] != [] and processo <= 2:
+        comparacoes += 1
         if processo != 2:
             pos = quick[1].pop(0)
             pos.data[2] = 1
@@ -208,15 +210,16 @@ def QuickFit(lista, pid, processo):
             pos = quick[1].pop(0)
             pos.data[0] = pid
             return pos.data[1]
-            
+    
     elif quick[2] != [] and processo <= 4:
+        comparacoes += 1
         if processo != 4:
             if processo <= 4/2:
                 pos = quick[2].pop(0)
                 # Metade do valor anterior
                 pos.data[2] = 2
                 lista.insert(["L", pos.data[1]+2, 2], pos)
-                lista.show("VIRTUAL QUICK")
+        
                 return QuickFit(lista, pid, processo)
             else:
                 uso = 4 - processo
@@ -228,7 +231,7 @@ def QuickFit(lista, pid, processo):
                 new = ["L", p.data[1]+processo, uso]
 
                 lista.insert(new, p)
-                lista.show("VIRTUAL QUICK")
+        
                 return p.data[1]
           
         else:
@@ -236,14 +239,16 @@ def QuickFit(lista, pid, processo):
             pos.data[0] = pid
             return pos.data[1]
         
+
     elif quick[3] != [] and processo <= 8:
+        comparacoes += 1
         if processo != 8:
             if processo <= 8/2:
                 pos = quick[3].pop(0)
                 # Metade do valor anterior
                 pos.data[2] = 4
                 lista.insert(["L", pos.data[1]+4, 4], pos)
-                lista.show("VIRTUAL QUICK")
+        
                 return QuickFit(lista, pid, processo)
             else:
                 uso = 8 - processo
@@ -255,7 +260,7 @@ def QuickFit(lista, pid, processo):
                 new = ["L", p.data[1]+processo, uso]
 
                 lista.insert(new, p)
-                lista.show("VIRTUAL QUICK")
+        
                 return p.data[1]
                             
         else:
@@ -264,13 +269,14 @@ def QuickFit(lista, pid, processo):
             return pos.data[1]
         
     elif quick[4] != [] and processo <= 16:
+        comparacoes += 1
         if processo != 16:
             if processo <= 16/2:
                 pos = quick[4].pop(0)
                 # Metade do valor anterior
                 pos.data[2] = 8
                 lista.insert(["L", pos.data[1]+8, 8], pos)
-                lista.show("VIRTUAL QUICK")
+        
                 return QuickFit(lista, pid, processo)
             else:
                 uso = 16 - processo
@@ -278,11 +284,9 @@ def QuickFit(lista, pid, processo):
                 p = quick[4].pop()
                 p.data[0] = pid
                 p.data[2] = processo
-
                 new = ["L", p.data[1]+processo, uso]
-
                 lista.insert(new, p)
-                lista.show("VIRTUAL QUICK")
+        
                 return p.data[1]
                 
         else:
@@ -307,6 +311,7 @@ def QuickFit(lista, pid, processo):
                     lista.remove(p.next.data)
                 else:
                     p = p.next
+
             return FirstFit(lista, pid, processo)
 
         else:
@@ -318,10 +323,8 @@ def QuickFit(lista, pid, processo):
 def GERremoveProcesso(pid):
     global lstvirtual
     lock1 = threading.Lock()
-    lstvirtual.show("Antes de remover")
-    print "EU SOU O PROCESSO ", pid, "E PEDI PARA ACABAR"
+
     acquireLock()
-    print "CONSEGUI O LOCK ", pid
     try:
         remove = False
         curr = lstvirtual.head
@@ -331,15 +334,12 @@ def GERremoveProcesso(pid):
                 break
             curr = curr.next
  
-        lstvirtual.show("Lista Virtual apos remocao do processo")
-        print "-- Removi o processo de pid ", pid
+
         if ger == "3":
-            print "TENHO QUE REMOVER O PROCESSO ", pid
+            # Organiza os espacos que foram agrupados
             QuickFit(lstvirtual, base, 0)
-            print "SAI DO QUICK ", pid
             
     finally:
-        lstvirtual.show("Depois de remover")
         releaseLock()
 
 
