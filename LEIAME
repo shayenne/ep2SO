@@ -1,10 +1,39 @@
 O programa foi escrito em linguagem Python versão 2.7. 
-O interpretador python (?)
 
-Para rodar o ep2 basta digitar:
+Para executar o ep2 basta digitar:
 $ python ep2.py
 
+O ep2 esta preparado para executar os seguintes comandos com seus respectivos
+argumentos:
 
-Informações para o ep!
-Para escrever os inteiros, basta converte-los para chr() e colocá-los no nmap :)
+- carrega <arquivo de trace>
+- espaco <enum>
+- substitui <snum>
+- executa <intervalo>
+- sai
+
+Os argumentos entre <> sao obrigatorios e seguem as seguintes especificacoes:
+
+   arquivo de trace:
+   Arquivo ja existente contendo linhas com processos formatados da seguinte forma
+   t0 nome tf b p1 t1 p2 t2 ... pn tn
+
+   enum: 
+   Inteiro identificador do algoritmo de gerenciamento de espaco livre a ser utilizado
+   1 : First Fit
+   2 : Next Fit
+   3 : Quick Fit
+
+   snum:
+   Inteiro identificador do algoritmo de substituicao de pagina a ser utilizado
+   1 : Not Recently Used Page
+   2 : First-In, First-Out
+   3 : Second Chance Page
+   4 : Least Recently Used Page
+
+   intervalo:
+   Imprime o estado da memoria de <intevalo> em intervalo
+
+   sai:
+   Finaliza o ep2
 
