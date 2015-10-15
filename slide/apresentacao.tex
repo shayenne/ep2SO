@@ -10,7 +10,6 @@
 % CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
 %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
 %----------------------------------------------------------------------------------------
 %	PACKAGES AND THEMES
 %----------------------------------------------------------------------------------------
@@ -131,7 +130,6 @@ Sistemas Operacionais
 \item Processos ordenados segundo t0 de forma crescente
 \item Processos bem comportados (não escrevem onde não devem)
 \item Espaço suficiente na memória virtual
-\item Processos armazenados de forma integral e contínuas na memória virtual
 \item Tempo de execução do processo: tf - t0
 \end{itemize}
 \end{frame}
@@ -215,16 +213,11 @@ Visão Geral
 \justifying
 \end{frame}
 
-%------------------------------------------------
-\begin{frame}
-\frametitle{Processos}
-IMAGEM
-\justifying
-\end{frame}
 
 %------------------------------------------------
 \begin{frame}
 \frametitle{Processos}
+
 \begin{itemize}
 \item Processo na memória virtual: escreve em todo o seu espaço o seu pid
 
@@ -313,13 +306,37 @@ referência
 \frametitle{Quick Fit}
 \begin{itemize}
 
-\item Possui uma lista para os tamanhos: 1, 2, 4, 6, 8 (páginas)
+\item Possui uma lista para os tamanhos: 1, 2, 4, 8 e 16 (páginas)
 
-\item Caso o tamanho do processo não seja dos listados acima, o First Fit é acionado
+\item "Ajusta" de acordo com o tamanho ocupado pelo processo  
 
 \end{itemize}
 \justifying
 \end{frame}
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Quick Fit}
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.6]{imagem4.png}
+\end{figure}
+
+\begin{itemize}
+
+\item Verifica se o tamanho é menor ou igual a sua metade
+
+\item Caso o tamanho do processo não seja dos listados acima, o First Fit é acionado
+
+\item Remoção: checa o intervalo do espaço livre para atualização das listas
+
+\end{itemize}
+
+\justifying
+\end{frame}
+
+
 
 %------------------------------------------------
 \section{Substituição de Página}
@@ -337,14 +354,15 @@ Substituição de Página
 \frametitle{MMU}
 \begin{itemize}
 
-\item Base dos processos obtidos a partir de um dicionário de dados: [ pid ][ base ][ limite ]
+\item Base dos processos obtidos a partir de um dicionário: 
 
+[ pid ][ base ][ limite ]
 
 \item Mapa MMU: 
  
 [ bit presente / ausente ][ page frame ][ bit R ][ contador ]
 
-\item (Base + endereço local) do processo -> mapeamento -> endereço físico
+\item (Base + endereço local) do processo --- mapeamento --- endereço físico
 
 \end{itemize}
 \justifying
@@ -397,9 +415,13 @@ Como funciona?
 %------------------------------------------------
 \subsection{NRUP} 
 %------------------------------------------------
-
 \begin{frame}
 \frametitle{Not Recently Used Page}
+
+\begin{center}
+[ pid ][ frame ][ bit R ][ contador ]
+\end{center}
+
 \begin{itemize}
 
 \item Dentre as páginas presentes na memória física, checa qual deles possui R = 0
@@ -414,10 +436,13 @@ Como funciona?
 %------------------------------------------------
 \begin{frame}
 \frametitle{First-In First-Out}
-\begin{itemize}
 
+\begin{center}
+[ pid ][ frame ][ bit R ][ contador ]
+\end{center}
+
+\begin{itemize}
 \item Coloca na fila as páginas dos processos que foram ocupando a memória física
-[ pid ][ página ] 
 
 \item A página mais ‘velha’ é retirada
 \end{itemize}
@@ -430,19 +455,19 @@ Como funciona?
 %------------------------------------------------
 \begin{frame}
 \frametitle{Second Chance}
+
+\begin{center}
+[ pid ][ frame ][ bit R ][ contador ]
+\end{center}
+
 \begin{itemize}
-
 \item Coloca na fila as páginas dos processos que foram ocupando a memória física
-
-[ pid ][ página ][ R ]
-\newline
 
 \item Verifica se a página a ser retirada possui bit R = 0
 
 se sim: a página é retirada
 
 se não: bit R é resetado e o processo é colocado no final da fila.
-
 \end{itemize}
 \justifying
 \end{frame}
@@ -452,7 +477,6 @@ se não: bit R é resetado e o processo é colocado no final da fila.
 \frametitle{Second Chance}
 Obs:
 \begin{itemize}
-
 \item Os bits R’s das páginas que estão na fila podem ser resetados
 
 \item Caso uma página tenha bit R = 0 e seja referenciada por algum processo, esse bit R permanecerá com bit R = 0
@@ -466,8 +490,15 @@ Obs:
 %------------------------------------------------
 \begin{frame}
 \frametitle{Least Recently Used Page}
+
+\begin{center}
+[ pid ][ frame ][ bit R ][ contador ]
+\end{center}
+
 \begin{itemize}
 \item Utiliza o contador e o bit R como referência
+
+\item A cada pulso de "clock" soma ao contador o valor de R
 \end{itemize}
 \justifying
 \end{frame}
@@ -483,50 +514,20 @@ Resultados
 \end{LARGE}
 \end{frame}
 
-
+%------------------------------------------------
 \begin{frame}
 \frametitle{Gerenciamento de Espaço Livre} 
+
+\begin{itemize}
+
+\end{itemize}
 \justifying
 \end{frame}
 
+
+%------------------------------------------------
 \begin{frame}
 \frametitle{Substituição de Páginas} 
-\justifying
-\end{frame}
-
-\begin{frame}
-\frametitle{First Fit} 
-\justifying
-\end{frame}
-
-\begin{frame}
-\frametitle{Next Fit} 
-\justifying
-\end{frame}
-
-\begin{frame}
-\frametitle{Quick Fit} 
-\justifying
-\end{frame}
-
-
-\begin{frame}
-\frametitle{NRU} 
-\justifying
-\end{frame}
-
-\begin{frame}
-\frametitle{FIFO} 
-\justifying
-\end{frame}
-
-\begin{frame}
-\frametitle{Second Chance} 
-\justifying
-\end{frame}
-
-\begin{frame}
-\frametitle{LRU} 
 \justifying
 \end{frame}
 
