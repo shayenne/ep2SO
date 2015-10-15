@@ -64,6 +64,8 @@ class List(object):
                     self.head = current_node.next
                     if current_node.next is not None:
                         current_node.next.prev = None
+                    else:
+                        self.tail = self.head = None
  
             current_node = current_node.next
 
