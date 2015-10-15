@@ -57,6 +57,7 @@ def gerente(espaco, pid):
             inicio = FirstFit(lstvirtual, pid, paginas)
             print "O processo de pid ", pid," ganhou ", paginas, "paginas e inicia em ", inicio
         elif ger == "2":
+            lstvirtual.show("Antes do NextFit ")
             inicio = NextFit(lstvirtual, pid, paginas)
         elif ger == "3":
             inicio = QuickFit(lstvirtual, pid, paginas)
@@ -106,6 +107,7 @@ def FirstFit(lista, pid, processo):
 # quer ocupar em paginas
 def NextFit(lista, pid, processo):
     global last
+    print " O last neste momento e ", last.data
     old = last
     atual = last
     while atual is not None:
@@ -143,13 +145,39 @@ def QuickFit(lista, pid, processo):
     global quick
     # Guarda os ponteiros para lugares vazios
     # de 16, 32, 64, 128 e 256 bytes
+
+    #####################################################
+    # Reorganizacao da lista apos remocao de processo
+    paginas = 0
+    if processo is 0:
+        p = lista.head
+        while p is None:
+            # Qual e o node que contem o novo espaco livre
+            if p.data[1] == pid:
+                paginas = p.data[2]
+                break
+            
+        # Olha para todas as listas do quick, remove o que estiver no intervalo
+        for q in quick:
+            i = 0
+            while i < len(q):
+                if q[i].data[1] in xrange(pid, pid+paginas):
+                    q.remove(q[i])
+                    i += 1
+                    
+        if paginas in [1, 2, 4, 8, 16]:
+            quick[paginas].append(p)
+        return
+    #####################################################
+
     p = lista.head
     while p is not None:
         if p.data[0] == "L":
             for i in xrange(5):
                 if p.data[2] == math.pow(2, i):
-                    print "Inseri ", p.data, "no quick ",i 
-                    quick[i].append(p)
+                    if p not in quick[i]:
+                        print "Inseri ", p.data, "no quick ",i 
+                        quick[i].append(p)
                     break
         p = p.next
     
@@ -189,16 +217,18 @@ def QuickFit(lista, pid, processo):
                 lista.show("VIRTUAL QUICK")
                 return QuickFit(lista, pid, processo)
             else:
-                menor = quick[2][0].data[1]
-                for p in quick[2]:
-                    if p.data[1] < menor:
-                        menor = p.data[1]
-                        rem = p
+                uso = 4 - processo
+                
+                p = quick[2].pop()
+                p.data[0] = pid
+                p.data[2] = processo
 
-                pos = quick[2].pop(quick[2].index(p))
+                new = ["L", p.data[1]+processo, uso]
+
+                lista.insert(new, p)
                 lista.show("VIRTUAL QUICK")
-                return FirstFit(lista, pid, processo)
-            
+                return p.data[1]
+          
         else:
             pos = quick[2].pop(0)
             pos.data[0] = pid
@@ -214,47 +244,106 @@ def QuickFit(lista, pid, processo):
                 lista.show("VIRTUAL QUICK")
                 return QuickFit(lista, pid, processo)
             else:
-                menor = quick[3][0].data[1]
-                for p in quick[3]:
-                    if p.data[1] < menor:
-                        menor = p.data[1]
-                        rem = p
+                uso = 8 - processo
+                
+                p = quick[3].pop()
+                p.data[0] = pid
+                p.data[2] = processo
 
-                pos = quick[3].pop(quick[3].index(p))
+                new = ["L", p.data[1]+processo, uso]
+
+                lista.insert(new, p)
                 lista.show("VIRTUAL QUICK")
-                return FirstFit(lista, pid, processo)
-            
+                return p.data[1]
+                            
         else:
             pos = quick[3].pop(0)
             pos.data[0] = pid
             return pos.data[1]
         
     elif quick[4] != [] and processo <= 16:
-        print ""
+        if processo != 16:
+            if processo <= 16/2:
+                pos = quick[4].pop(0)
+                # Metade do valor anterior
+                pos.data[2] = 8
+                lista.insert(["L", pos.data[1]+8, 8], pos)
+                lista.show("VIRTUAL QUICK")
+                return QuickFit(lista, pid, processo)
+            else:
+                uso = 16 - processo
+                
+                p = quick[4].pop()
+                p.data[0] = pid
+                p.data[2] = processo
+
+                new = ["L", p.data[1]+processo, uso]
+
+                lista.insert(new, p)
+                lista.show("VIRTUAL QUICK")
+                return p.data[1]
+                
+        else:
+            pos = quick[4].pop(0)
+            pos.data[0] = pid
+            return pos.data[1]
+
     else:
-        return FirstFit(lista, pid, processo)
-        
+        search = FirstFit(lista, pid, processo)
+        if search is None:
+            # Junta espacos que sao vizinhos
+            p = lista.head
+            while p is not None:
+                if p.data[0] == "L" and p.next is not None and p.next.data[0] == "L":
+                    if p.data[2] in [1, 2, 4, 8, 16]:
+                        quick[p.data[2]].remove(p)
+                    if p.next.data[2] in [1, 2, 4, 8, 16]:
+                        quick[p.next.data[2]].remove(p.next)
+
+                    soma = p.data[2] + p.next.data[2]
+                    p.data[2] = soma
+                    lista.remove(p.next.data)
+                else:
+                    p = p.next
+            return FirstFit(lista, pid, processo)
+
+        else:
+            return search
 
         
 
 # Remove o processo pid da memoria virtual
 def GERremoveProcesso(pid):
-    lock1 = threading.RLock()
+    global lstvirtual, last
+    lock1 = threading.Lock()
     lstvirtual.show("Antes de remover")
     acquireLock()
     try:
-        if ger != "3":
-            curr = lstvirtual.head
-            while curr is not None:
-                if curr.data[0] == pid:
-                    liberaEspaco(lstvirtual, curr)
-                    break
-                curr = curr.next
+        remove = False
+        curr = lstvirtual.head
+        while curr is not None:
+            if curr.data[0] == pid:
+                if ger == "2" and curr is last:
+                    remove = True
+                    #if curr.prev.prev is not None:
+                    #    last = curr.prev.prev
+                    #else:
+                    #    last = lstvirtual.head
+                base = liberaEspaco(lstvirtual, curr)
+                break
+            if remove:
+                if curr.next is not None:
+                    last = curr.next
+                else:
+                    last = lstvirtual.head
+            curr = curr.next
 
-            lstvirtual.show("Lista Virtual apos remocao do processo")
-            print "-- Removi o processo de pid ", pid
-        else:
-            print "Ainda nao fizemos o QuickFit :("
+        lstvirtual.show("Lista Virtual apos remocao do processo")
+        print "-- Removi o processo de pid ", pid
+        if ger == "3":
+            print "TENHO QUE REMOVER O PROCESSO ", pid
+            QuickFit(lstvirtual, base, 0)
+            
     finally:
         lstvirtual.show("Depois de remover")
         releaseLock()
@@ -269,6 +358,7 @@ def liberaEspaco(lst, node):
         lst.remove(node.next.data)
         lst.remove(node.data)
         local.data = new
+        return new[1]
         
     
     elif node.prev is not None and node.prev.data[0] == "L":
@@ -276,6 +366,7 @@ def liberaEspaco(lst, node):
         new = ["L", node.prev.data[1], node.data[2]+node.prev.data[2]]
         lst.remove(node.data)
         local.data = new
+        return new[1]
         
         
         
@@ -284,11 +375,12 @@ def liberaEspaco(lst, node):
         new = ["L", node.data[1], node.next.data[2]+node.data[2]]
         lst.remove(node.next.data)
         local.data = new
+        return new[1]
         print "REALMENTE ENTREI AQUI"
 
     else:
         node.data[0] = "L"
-        
+        return node.data[1]
     
 
 

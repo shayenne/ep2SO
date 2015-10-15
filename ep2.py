@@ -30,8 +30,8 @@ if __name__ == "__main__":
 	
     prompt = raw_input("[ep2]: ").split()
     proc = []
-    mem = 'ep2.mem'
-    vir = 'ep2.vir'
+    mem = '/tmp/ep2.mem'
+    vir = '/tmp/ep2.vir'
     
     while prompt[0] != "sai":
         
@@ -83,7 +83,7 @@ if __name__ == "__main__":
                     
         if prompt[0] == "executa":
             # APAGAR
-            espaco = "3"
+            #espaco = "3"
             substitui = "1"
             #
             try:
@@ -125,8 +125,8 @@ if __name__ == "__main__":
                 rt = RepeatedTimer(intervalo, imprimeEstado, intervalo)
                 # Reseta o bit R dos processos
                 rr = RepeatedTimer(4, resetaR)
-                # Atualiza contador com 'pulso de clock'
-                rc = RepeatedTimer(0.1, MMUatualizaContador)
+                # Atualiza contador com 'pulso de clock' de 1 segundo
+                rc = RepeatedTimer(1, MMUatualizaContador)
                 try:
                     # Inicia a execucao de todos os processos
                     for t in threads:
