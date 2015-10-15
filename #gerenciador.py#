@@ -150,7 +150,6 @@ def QuickFit(lista, pid, processo):
     # Reorganizacao da lista apos remocao de processo
     paginas = 0
     if processo == 0:
-        print ">>>>>>Essa e a base ", pid
         p = lista.head
         while p is None:
             # Qual e o node que contem o novo espaco livre
