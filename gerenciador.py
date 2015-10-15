@@ -324,7 +324,8 @@ def GERremoveProcesso(pid):
     global lstvirtual
     lock1 = threading.Lock()
 
-    acquireLock()
+    #acquireLock()
+    lock1.acquire()
     try:
         remove = False
         curr = lstvirtual.head
@@ -340,7 +341,8 @@ def GERremoveProcesso(pid):
             QuickFit(lstvirtual, base, 0)
             
     finally:
-        releaseLock()
+        #releaseLock()
+        lock1.release()
 
 
 # Recebe uma lista ligada e o no que deve remover, faz a compressao de acordo 
