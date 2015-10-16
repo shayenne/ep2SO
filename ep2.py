@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import readline
-import funcoes as f
 import struct
 import time
 import threading
@@ -14,7 +13,7 @@ from MMU import *
 
 global tampag
 
-def imprimeEstado(intervalo):
+def imprimeEstado():
     #print "Esperei ", intervalo, "segundos :P"
     MMUimprimeFisica()
     GERimprimeVirtual()
@@ -120,7 +119,7 @@ if __name__ == "__main__":
 
                 
                 # Impressao dos estados das memorias
-                rt = RepeatedTimer(intervalo, imprimeEstado, intervalo)
+                rt = RepeatedTimer(intervalo, imprimeEstado)
                 # Reseta o bit R dos processos
                 rr = RepeatedTimer(4, resetaR)
                 # Atualiza contador com 'pulso de clock' de 1 segundo
@@ -134,8 +133,9 @@ if __name__ == "__main__":
                         t.join()
                     
                 finally:
-                    imprimeContador()
-                    imprimeComparacoes()
+                    #imprimeContador()
+                    #imprimeComparacoes()
+                    imprimeEstado()
                     rr.stop()
                     rt.stop()
                     rc.stop()

@@ -109,9 +109,11 @@ def FirstFit(lista, pid, processo):
 # quer ocupar em paginas
 def NextFit(lista, pid, processo):
     global last, comparacoes #TESTES#
-
+    #print "O meu last e ", last.data
     old = last
     atual = last
+    #if last == None:
+    #    atual = lista.head
     while atual is not None:
         comparacoes += 1
         if atual.data[0] == "L" and atual.data[2] >= processo:
@@ -122,22 +124,28 @@ def NextFit(lista, pid, processo):
                 dif = atual.data[2] - processo
                 atual.data[2] = processo
                 lista.insert(["L", atual.data[1]+processo, dif], atual)
-                last = atual
-            break
-        if atual.next == None:
-            atual = lista.head
-
-        if atual.next == old:
-            atual = None
             break
         
-        atual = atual.next
+        
+        
+        if atual.next is not None and atual.next.data == old.data:
+            last = old
+            atual = None
+            break
+
+        if atual.next == None:
+            atual = lista.head
+            last = atual
+        else:
+            atual = atual.next
     # APAGAR
     #lista.show("Virtual")
     #
     if atual is not None:
+        last = atual
         return atual.data[1]
 
+    
     return None
     
 

@@ -91,7 +91,7 @@ def MMUacessaPosicao(pid, pos):
     lock3 = threading.Lock()
     lock3.acquire()
     try:
-        print ">> O pid ", pid, "esta tentando acessar a posicao ", pos
+        #print ">> O pid ", pid, "esta tentando acessar a posicao ", pos
         leuPosicao =  MMUtraduzEndereco(processos[pid][0],  pos)
         
         # Calcula qual pagina do processo deve ser carregada
@@ -99,7 +99,7 @@ def MMUacessaPosicao(pid, pos):
         base = processos[pid][0]
 
         if leuPosicao is not None:
-            print "Li a posicao ", leuPosicao, "da memoria fisica"
+            #print "Li a posicao ", leuPosicao, "da memoria fisica"
             leMemoria(mem, leuPosicao)
 
             lockmapa.acquire()

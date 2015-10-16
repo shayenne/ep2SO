@@ -33,7 +33,7 @@ class Processo:
         espera = self.t0 - (time.time() - inicio)
         if espera > 0:
             time.sleep(espera)
-        print "O processo quer alocar ", self.pid
+        #print "O processo quer alocar ", self.pid
         # Pede para ser carregado na memoria
         self.alocaEspaco(self.b)
 
@@ -46,11 +46,11 @@ class Processo:
             self.lePosicao(entry[0])
 
         # Espera chegar o seu fim
-        espera = (self.tf - self.t0) - (time.time() - inicio)
+        espera = (self.tf) - (time.time() - inicio)
         if espera > 0:
             time.sleep(espera)
 
-        print "O processo terminou ", self.pid
+        #print "O processo terminou ", self.pid
         # Avisa que terminou
         GERremoveProcesso(self.pid)
         MMUterminaProcesso(self.pid)

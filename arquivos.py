@@ -35,7 +35,7 @@ def escreveMemoria(arqmem, ini, fim, pid):
 def leMemoria(arqmem, pos):
     # Acessa uma posicao especifica do arquivo de memoria
     mapmem = memory_map(arqmem)
-    print mapmem[pos]
+    #print mapmem[pos]
     mapmem.close()
     
     
