@@ -517,6 +517,8 @@ Resultados
 %------------------------------------------------
 \begin{frame}
 \frametitle{Gerenciamento de Espaço Livre} 
+Avaliado pela quantidade de "comparações" realizadas para encontrar espaço para o processo
+
 
 \justifying
 \end{frame}
@@ -528,12 +530,83 @@ Resultados
 
 Exemplo de um modelo ótimo
 
+Memória Física: 3 páginas
+
 \begin{figure}
 \centering
-\includegraphics[scale=0.4]{ressubs1.png}
+\includegraphics[scale=0.4]{fimfim2.png}
 \end{figure}
 
-Total de 16 page fault
+Total de 13 page fault
+
+\justifying
+\end{frame}
+
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Substituição de Páginas} 
+
+\begin{table}[h!]
+  \begin{center}
+   	\label{tab:table1}
+    \begin{tabular}{ccc}
+      \toprule
+      Algoritmo & Page fault\\
+      \midrule
+      NRU & 13\\
+      FIFO & 14\\
+      SC & 16\\
+      LRU & 15\\
+            
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
+
+\justifying
+\end{frame}
+
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Substituição de Páginas} 
+
+Exemplo de um modelo ótimo
+
+Memória Física: 3 páginas
+
+\begin{figure}
+\centering
+\includegraphics[scale=0.4]{fimfim1.png}
+\end{figure}
+
+Total de 7 page fault
+
+\justifying
+\end{frame}
+
+
+%------------------------------------------------
+\begin{frame}
+\frametitle{Substituição de Páginas} 
+
+\begin{table}[h!]
+  \begin{center}
+   	\label{tab:table1}
+    \begin{tabular}{ccc}
+      \toprule
+      Algoritmo & Page fault\\
+      \midrule
+      NRU & 7\\
+      FIFO & 7\\
+      SC & 7\\
+      LRU & 7\\
+            
+      \bottomrule
+    \end{tabular}
+  \end{center}
+\end{table}
 
 \justifying
 \end{frame}
