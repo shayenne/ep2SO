@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2014.11.30)  15 OCT 2015 23:10
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Debian) (format=pdflatex 2014.11.30)  15 OCT 2015 23:31
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1209,36 +1209,42 @@ Package pdftex.def Info: imagem4.png used on input line 337.
 
 ] [26
 
-] [27
-
 ]
-<fimfim2.png, id=1140, 755.82375pt x 211.38976pt>
+<graf.jpg, id=1101, 407.5225pt x 292.09125pt>
+File: graf.jpg Graphic file (type jpg)
+ <use graf.jpg>
+Package pdftex.def Info: graf.jpg used on input line 531.
+(pdftex.def)             Requested size: 163.0061pt x 116.83441pt.
+ [27
+
+ <./graf.jpg>]
+<fimfim2.png, id=1141, 755.82375pt x 211.38976pt>
 File: fimfim2.png Graphic file (type png)
  <use fimfim2.png>
-Package pdftex.def Info: fimfim2.png used on input line 543.
+Package pdftex.def Info: fimfim2.png used on input line 550.
 (pdftex.def)             Requested size: 302.32414pt x 84.5544pt.
 
-Overfull \hbox (11.58151pt too wide) in paragraph at lines 543--543
+Overfull \hbox (11.58151pt too wide) in paragraph at lines 550--550
  [] 
  []
 
 [28
 
  <./fimfim2.png>]
-LaTeX Font Info:    Try loading font information for U+msa on input line 568.
+LaTeX Font Info:    Try loading font information for U+msa on input line 575.
  (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2009/06/22 v3.00 AMS symbols A
 )
-LaTeX Font Info:    Try loading font information for U+msb on input line 568.
+LaTeX Font Info:    Try loading font information for U+msb on input line 575.
 (/usr/share/texlive/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2009/06/22 v3.00 AMS symbols B
 ) [29
 
 ]
-<fimfim1.png, id=1222, 536.0025pt x 264.99pt>
+<fimfim1.png, id=1223, 536.0025pt x 264.99pt>
 File: fimfim1.png Graphic file (type png)
  <use fimfim1.png>
-Package pdftex.def Info: fimfim1.png used on input line 587.
+Package pdftex.def Info: fimfim1.png used on input line 594.
 (pdftex.def)             Requested size: 214.3972pt x 105.99411pt.
  [30
 
@@ -1246,7 +1252,7 @@ Package pdftex.def Info: fimfim1.png used on input line 587.
 ame{tab:table1}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.612 \end{frame}
+l.619 \end{frame}
                   [31
 
 ]
@@ -1259,11 +1265,11 @@ l.612 \end{frame}
 \tf@snm=\write8
 \openout8 = `apresentacao.snm'.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 615.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 615.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 622.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 622.
  (./apresentacao.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 615.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 615.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 622.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 622.
 Package rerunfilecheck Info: File `apresentacao.out' has not changed.
 (rerunfilecheck)             Checksum: 057A14ECFC106CB99F2D770DA20638E2;746.
 
@@ -1274,13 +1280,13 @@ LaTeX Font Warning: Size substitutions with differences
 
 LaTeX Warning: There were multiply-defined labels.
 
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 615.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 622.
  ) 
 Here is how much of TeX's memory you used:
- 17257 strings out of 495059
- 316967 string characters out of 3182029
+ 17263 strings out of 495059
+ 317030 string characters out of 3182029
  399725 words of memory out of 3000000
- 19945 multiletter control sequences out of 15000+200000
+ 19949 multiletter control sequences out of 15000+200000
  10870 words of font info for 40 fonts, out of 3000000 for 9000
  14 hyphenation exceptions out of 8191
  49i,16n,64p,428b,553s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -1288,10 +1294,10 @@ Here is how much of TeX's memory you used:
 r/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss12.pfb></usr/shar
 e/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss17.pfb></usr/share/texl
 ive/texmf-dist/fonts/type1/public/amsfonts/cm/cmss8.pfb>
-Output written on apresentacao.pdf (31 pages, 191274 bytes).
+Output written on apresentacao.pdf (31 pages, 201240 bytes).
 PDF statistics:
- 1336 PDF objects out of 1440 (max. 8388607)
+ 1337 PDF objects out of 1440 (max. 8388607)
  1276 compressed objects within 13 object streams
  77 named destinations out of 1000 (max. 500000)
- 152 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 157 words of extra memory for PDF output out of 10000 (max. 10000000)
 
